@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading;
 using ClientCore;
 using ClientGUI;
 using DTAClient.Domain;
@@ -14,14 +20,9 @@ using Microsoft.Xna.Framework.Media;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using ClientUpdater;
 using DTAClient.Domain.Multiplayer;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace DTAClient.DXGUI.Generic
 {
@@ -33,6 +34,12 @@ namespace DTAClient.DXGUI.Generic
         private const float MEDIA_PLAYER_VOLUME_FADE_STEP = 0.01f;
         private const float MEDIA_PLAYER_VOLUME_EXIT_FADE_STEP = 0.025f;
         private const double UPDATE_RE_CHECK_THRESHOLD = 30.0;
+        private List<Texture2D> backgroundFrames;
+        private int currentFrame;
+        private double frameTime;
+        private double timePerFrame = 100; // 每帧的显示时间，单位为毫秒
+        private bool dynamicBackgroundAvailable = false;
+        private SpriteBatch spriteBatch;
 
         /// <summary>
         /// Creates a new instance of the main menu.
@@ -108,7 +115,6 @@ namespace DTAClient.DXGUI.Generic
                 _updateInProgress = value;
                 topBar.SetSwitchButtonsClickable(!_updateInProgress);
                 topBar.SetOptionsButtonClickable(!_updateInProgress);
-                SetButtonHotkeys(!_updateInProgress);
             }
         }
 
@@ -147,10 +153,27 @@ namespace DTAClient.DXGUI.Generic
             GameProcessLogic.GameProcessExited += SharedUILogic_GameProcessExited;
 
             Name = nameof(MainMenu);
-            BackgroundTexture = AssetLoader.LoadTexture("MainMenu/mainmenubg.png");
-            ClientRectangle = new Rectangle(0, 0, BackgroundTexture.Width, BackgroundTexture.Height);
-
+            // BackgroundTexture = AssetLoader.LoadTexture("MainMenu/mainmenubg.png");
+            // ClientRectangle = new Rectangle(0, 0, BackgroundTexture.Width, BackgroundTexture.Height);
             WindowManager.CenterControlOnScreen(this);
+
+            spriteBatch = new SpriteBatch(GraphicsDevice); // 初始化 spriteBatch
+            // 尝试加载动态背景帧
+            backgroundFrames = new List<Texture2D>();
+            int frameIndex = 0;
+
+            while (File.Exists(Path.Combine("Resources", "DIY", "主菜单背景", $"GIF{frameIndex}.png")))
+            {
+                backgroundFrames.Add(AssetLoader.LoadTexture($"Resources/DIY/主菜单背景/GIF{frameIndex}.png"));
+                frameIndex++;
+            }
+
+            if (backgroundFrames.Count > 0)
+            {
+                dynamicBackgroundAvailable = true;  // 如果有动态背景帧，设置标志
+                currentFrame = 0;
+                frameTime = 0;
+            }
 
             btnNewCampaign = new XNAClientButton(WindowManager);
             btnNewCampaign.Name = nameof(btnNewCampaign);
@@ -319,40 +342,136 @@ namespace DTAClient.DXGUI.Generic
 
             Updater.Restart += Updater_Restart;
 
-            SetButtonHotkeys(true);
+            SetButtonHotkeys();
         }
 
-        private void SetButtonHotkeys(bool enableHotkeys)
+        public void SetButtonHotkeys()
         {
             if (!Initialized)
                 return;
 
-            if (enableHotkeys)
+            string iniFilePath = Path.Combine("Resources", "DIY", "快捷键.ini");
+
+            // 默认快捷键设置为 None
+            btnNewCampaign.HotKey = Keys.None;
+            btnLoadGame.HotKey = Keys.None;
+            btnSkirmish.HotKey = Keys.None;
+            btnCnCNet.HotKey = Keys.None;
+            btnLan.HotKey = Keys.None;
+            btnOptions.HotKey = Keys.None;
+            btnMapEditor.HotKey = Keys.None;
+            btnStatistics.HotKey = Keys.None;
+            btnCredits.HotKey = Keys.None;
+            btnExtras.HotKey = Keys.None;
+
+            if (File.Exists(iniFilePath))
             {
-                btnNewCampaign.HotKey = Keys.C;
-                btnLoadGame.HotKey = Keys.L;
-                btnSkirmish.HotKey = Keys.S;
-                btnCnCNet.HotKey = Keys.M;
-                btnLan.HotKey = Keys.N;
-                btnOptions.HotKey = Keys.O;
-                btnMapEditor.HotKey = Keys.E;
-                btnStatistics.HotKey = Keys.T;
-                btnCredits.HotKey = Keys.R;
-                btnExtras.HotKey = Keys.X;
+                var lines = File.ReadAllLines(iniFilePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('=');
+                    if (parts.Length == 2)
+                    {
+                        string action = parts[0].Trim();
+                        string key = parts[1].Trim();
+
+                        switch (action)
+                        {
+                            case "01新战役":
+                                btnNewCampaign.HotKey = ParseKey(key);
+                                break;
+                            case "02存档":
+                                btnLoadGame.HotKey = ParseKey(key);
+                                break;
+                            case "03遭遇战":
+                                btnSkirmish.HotKey = ParseKey(key);
+                                break;
+                            case "04联机大厅":
+                                btnCnCNet.HotKey = ParseKey(key);
+                                break;
+                            case "05局域网":
+                                btnLan.HotKey = ParseKey(key);
+                                break;
+                            case "06设置":
+                                btnOptions.HotKey = ParseKey(key);
+                                break;
+                            case "07地图编辑器":
+                                btnMapEditor.HotKey = ParseKey(key);
+                                break;
+                            case "08统计信息":
+                                btnStatistics.HotKey = ParseKey(key);
+                                break;
+                            case "09致谢":
+                                btnCredits.HotKey = ParseKey(key);
+                                break;
+                            case "10额外":
+                                btnExtras.HotKey = ParseKey(key);
+                                break;
+                        }
+                    }
+                }
             }
             else
             {
-                btnNewCampaign.HotKey = Keys.None;
-                btnLoadGame.HotKey = Keys.None;
-                btnSkirmish.HotKey = Keys.None;
-                btnCnCNet.HotKey = Keys.None;
-                btnLan.HotKey = Keys.None;
-                btnOptions.HotKey = Keys.None;
-                btnMapEditor.HotKey = Keys.None;
-                btnStatistics.HotKey = Keys.None;
-                btnCredits.HotKey = Keys.None;
-                btnExtras.HotKey = Keys.None;
+                Logger.Log($"无法找到快捷键文件: {iniFilePath}");
             }
+        }
+
+        public void DisableButtonHotkeys()
+        {
+            btnNewCampaign.HotKey = Keys.None;
+            btnLoadGame.HotKey = Keys.None;
+            btnSkirmish.HotKey = Keys.None;
+            btnCnCNet.HotKey = Keys.None;
+            btnLan.HotKey = Keys.None;
+            btnOptions.HotKey = Keys.None;
+            btnMapEditor.HotKey = Keys.None;
+            btnStatistics.HotKey = Keys.None;
+            btnCredits.HotKey = Keys.None;
+            btnExtras.HotKey = Keys.None;
+        }
+
+        private static Keys ParseKey(string keyString)
+        {
+            return keyString switch
+            {
+                "Enter" => Keys.Enter,
+                "Escape" => Keys.Escape,
+                "C" => Keys.C,
+                "L" => Keys.L,
+                "S" => Keys.S,
+                "M" => Keys.M,
+                "N" => Keys.N,
+                "O" => Keys.O,
+                "E" => Keys.E,
+                "T" => Keys.T,
+                "R" => Keys.R,
+                "X" => Keys.X,
+                "A" => Keys.A,
+                "D" => Keys.D,
+                "W" => Keys.W,
+                "Q" => Keys.Q,
+                "F" => Keys.F,
+                "Z" => Keys.Z,
+                "V" => Keys.V,
+                "B" => Keys.B,
+                "P" => Keys.P,
+                "I" => Keys.I,
+                "H" => Keys.H,
+                "Space" => Keys.Space,
+                "Tab" => Keys.Tab,
+                "Left" => Keys.Left,
+                "Right" => Keys.Right,
+                "Up" => Keys.Up,
+                "Down" => Keys.Down,
+                "Back" => Keys.Back,
+                "Delete" => Keys.Delete,
+                "Home" => Keys.Home,
+                "End" => Keys.End,
+                "PageUp" => Keys.PageUp,
+                "PageDown" => Keys.PageDown,
+                _ => Keys.None // 默认返回 None
+            };
         }
 
         private void OptionsWindow_EnabledChanged(object sender, EventArgs e)
@@ -377,7 +496,7 @@ namespace DTAClient.DXGUI.Generic
             }
             catch (Exception ex)
             {
-                Logger.Log("Refreshing settings failed! Exception message: " + ex.Message);
+                Logger.Log("刷新设置失败！异常消息: " + ex.Message);
                 // We don't want to show the dialog when starting a game
                 //XNAMessageBox.Show(WindowManager, "Saving settings failed",
                 //    "Saving settings failed! Error message: " + ex.Message);
@@ -690,7 +809,22 @@ namespace DTAClient.DXGUI.Generic
 
         private void LblVersion_LeftClick(object sender, EventArgs e)
         {
-            ProcessLauncher.StartShellProcess(ClientConfiguration.Instance.ChangelogURL);
+            if (!string.IsNullOrEmpty(ClientConfiguration.Instance.ChangelogURL))
+            {
+                ProcessLauncher.StartShellProcess(ClientConfiguration.Instance.ChangelogURL);
+            }
+            else
+            {
+                using var errorMsgBox = new XNAMessageBox(WindowManager, "错误", "未找到相关链接。", XNAMessageBoxButtons.OK);
+                errorMsgBox.OKClickedAction = (msgBox) =>
+                {
+                    // 移除提示框
+                    WindowManager.RemoveControl(msgBox.Parent ?? msgBox);
+                };
+
+                // 显示消息框
+                errorMsgBox.Show();
+            }
         }
 
         private void ForceUpdate()
@@ -832,7 +966,7 @@ namespace DTAClient.DXGUI.Generic
             => innerPanel.Show(innerPanel.CampaignSelector);
 
         private void BtnLoadGame_LeftClick(object sender, EventArgs e)
-            => innerPanel.Show(innerPanel.GameLoadingWindow);
+         => innerPanel.Show(innerPanel.GameLoadingWindow);
 
         private void BtnLan_LeftClick(object sender, EventArgs e)
         {
@@ -864,7 +998,7 @@ namespace DTAClient.DXGUI.Generic
 
         private void BtnCredits_LeftClick(object sender, EventArgs e)
         {
-            ProcessLauncher.StartShellProcess(MainClientConstants.CREDITS_URL);
+            innerPanel.Show(innerPanel.CreditsWindow);
         }
 
         private void BtnExtras_LeftClick(object sender, EventArgs e) =>
@@ -910,6 +1044,18 @@ namespace DTAClient.DXGUI.Generic
             if (isMusicFading)
                 FadeMusic(gameTime);
 
+            if (dynamicBackgroundAvailable)
+            {
+                // 更新动态背景帧
+                frameTime += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+                if (frameTime >= timePerFrame)
+                {
+                    currentFrame = (currentFrame + 1) % backgroundFrames.Count;
+                    frameTime = 0;
+                }
+            }
+
             base.Update(gameTime);
         }
 
@@ -917,8 +1063,38 @@ namespace DTAClient.DXGUI.Generic
         {
             lock (locker)
             {
-                base.Draw(gameTime);
+                spriteBatch.Begin();
+
+                // 如果有动态背景，则绘制在屏幕上
+                if (dynamicBackgroundAvailable)
+                {
+                    spriteBatch.Draw(backgroundFrames[currentFrame], new Vector2(0, 0), Color.White);
+                }
+
+                spriteBatch.End();
+
+                base.Draw(gameTime); // 确保其他UI元素在背景之后绘制
             }
+        }
+
+        // 资源释放逻辑
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                spriteBatch?.Dispose();
+
+                // 处理动态背景帧的释放
+                if (backgroundFrames != null)
+                {
+                    foreach (var frame in backgroundFrames)
+                    {
+                        frame?.Dispose();
+                    }
+                }
+            }
+
+            base.Dispose(disposing);
         }
 
         /// <summary>
@@ -941,7 +1117,7 @@ namespace DTAClient.DXGUI.Generic
                 }
                 catch (InvalidOperationException ex)
                 {
-                    Logger.Log("Playing main menu music failed! " + ex.Message);
+                    Logger.Log("播放主菜单音乐失败！ " + ex.Message);
                 }
             }
         }
@@ -995,7 +1171,7 @@ namespace DTAClient.DXGUI.Generic
 
         private void ExitClient()
         {
-            Logger.Log("Exiting.");
+            Logger.Log("正在退出.");
             WindowManager.CloseGame();
             themeSong?.Dispose();
 #if !XNA
@@ -1036,7 +1212,7 @@ namespace DTAClient.DXGUI.Generic
             }
             catch (Exception ex)
             {
-                Logger.Log("Turning music off failed! Message: " + ex.Message);
+                Logger.Log("关闭音乐失败！消息: " + ex.Message);
             }
         }
 
@@ -1054,7 +1230,7 @@ namespace DTAClient.DXGUI.Generic
             }
             catch (Exception e)
             {
-                Logger.Log("Error encountered when checking media player availability. Error message: " + e.Message);
+                Logger.Log("检查媒体播放器可用性时遇到错误。错误消息: " + e.Message);
                 return false;
             }
         }

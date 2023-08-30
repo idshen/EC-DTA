@@ -535,7 +535,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
                 if (iu == null)
                 {
-                    Logger.Log("Null IRCUser in private messaging?");
+                    Logger.Log("私有消息中的空 IRCUser？");
                     return;
                 }
 

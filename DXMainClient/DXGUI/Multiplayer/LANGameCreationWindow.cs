@@ -7,6 +7,7 @@ using ClientCore;
 using System.IO;
 using Rampastring.Tools;
 using ClientCore.Extensions;
+using Microsoft.Xna.Framework.Input;
 
 namespace DTAClient.DXGUI.Multiplayer
 {

@@ -335,7 +335,7 @@ namespace DTAClient.Domain.Multiplayer
 
                     if (parts.Length is < 3 or > 5)
                     {
-                        Logger.Log($"Invalid format for ExtraTexture{i} in map " + BaseFilePath);
+                        Logger.Log($"地图 " + BaseFilePath + " 中的 ExtraTexture{i} 格式无效");
                         continue;
                     }
 
@@ -428,7 +428,7 @@ namespace DTAClient.Domain.Multiplayer
             }
             catch (Exception ex)
             {
-                Logger.Log("Setting info for " + BaseFilePath + " failed! Reason: " + ex.Message);
+                Logger.Log("为 " + BaseFilePath + " 设置信息失败！原因: " + ex.Message);
                 PreStartup.LogException(ex);
                 return false;
             }
@@ -457,7 +457,7 @@ namespace DTAClient.Domain.Multiplayer
                 }
                 catch (Exception e)
                 {
-                    Logger.Log($"Unable to parse team start mappings. Map: \"{Name}\", Error: {e.Message}");
+                    Logger.Log($"无法解析团队起始映射。地图: \"{Name}\", 错误: {e.Message}");
                     TeamStartMappingPresets = new List<TeamStartMappingPreset>();
                 }
             }
@@ -541,7 +541,7 @@ namespace DTAClient.Domain.Multiplayer
 
                 if (GameModes.Length == 0)
                 {
-                    Logger.Log("Custom map " + customMapFilePath + " has no game modes!");
+                    Logger.Log("自定义地图 " + customMapFilePath + " 没有游戏模式！");
                     return false;
                 }
 
@@ -630,7 +630,7 @@ namespace DTAClient.Domain.Multiplayer
             }
             catch
             {
-                Logger.Log("Loading custom map " + customMapFilePath + " failed!");
+                Logger.Log("加载自定义地图 " + customMapFilePath + " 失败！");
                 return false;
             }
         }
@@ -648,7 +648,7 @@ namespace DTAClient.Domain.Multiplayer
 
             if (keys == null)
             {
-                Logger.Log("Invalid ForcedOptions section \"" + forcedOptionsSection + "\" in map " + BaseFilePath);
+                Logger.Log("地图 " + BaseFilePath + " 中的 ForcedOptions 部分 \"" + forcedOptionsSection + "\" 无效");
                 return;
             }
 

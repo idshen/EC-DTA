@@ -49,7 +49,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
             {
                 if (UploadedMaps.Contains(map.SHA1) || MapUploadQueue.Contains(map))
                 {
-                    Logger.Log("MapSharer: Already uploading map " + map.BaseFilePath + " - returning.");
+                    Logger.Log("MapSharer: 已经在上传地图 " + map.BaseFilePath + " - 返回。");
                     return;
                 }
 
@@ -76,7 +76,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
 
             MapUploadStarted?.Invoke(null, new MapEventArgs(map));
 
-            Logger.Log("MapSharer: Starting upload of " + map.BaseFilePath);
+            Logger.Log("MapSharer: 开始上传 " + map.BaseFilePath);
 
             bool success = false;
             string message = MapUpload(MAPDB_URL, map, myGameId, out success);
@@ -90,13 +90,13 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
                     UploadedMaps.Add(map.SHA1);
                 }
 
-                Logger.Log("MapSharer: Uploading map " + map.BaseFilePath + " completed succesfully.");
+                Logger.Log("MapSharer: 上传地图 " + map.BaseFilePath + " 完成成功。");
             }
             else
             {
                 MapUploadFailed?.Invoke(null, new MapEventArgs(map));
 
-                Logger.Log("MapSharer: Uploading map " + map.BaseFilePath + " failed! Returned message: " + message);
+                Logger.Log("MapSharer: 上传地图 " + map.BaseFilePath + " 失败！返回消息: " + message);
             }
 
             lock (locker)
@@ -111,7 +111,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
                     array[0] = nextMap;
                     array[1] = myGameId;
 
-                    Logger.Log("MapSharer: There are additional maps in the queue.");
+                    Logger.Log("MapSharer: 队列中还有其他地图。");
 
                     Upload(array);
                 }
@@ -179,7 +179,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
                         success = false;
                         return response;
                     }
-                    Logger.Log("MapSharer: Upload response: " + response);
+                    Logger.Log("MapSharer: 上传响应: " + response);
 
                     //MessageBox.Show((response));
 
@@ -288,7 +288,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
             {
                 if (MapDownloadQueue.Contains(sha1))
                 {
-                    Logger.Log("MapSharer: Map " + sha1 + " already exists in the download queue.");
+                    Logger.Log("MapSharer: 地图 " + sha1 + " 已经存在于下载队列中。");
                     return;
                 }
 
@@ -315,18 +315,18 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
             string myGameId = (string)sha1AndGame[1];
             string mapName = (string)sha1AndGame[2];
 
-            Logger.Log("MapSharer: Preparing to download map " + sha1 + " with name: " + mapName);
+            Logger.Log("MapSharer: 准备下载地图 " + sha1 + "，名称为: " + mapName);
 
             bool success;
 
             try
             {
-                Logger.Log("MapSharer: MapDownloadStarted");
+                Logger.Log("MapSharer: 地图下载开始");
                 MapDownloadStarted?.Invoke(null, new SHA1EventArgs(sha1, mapName));
             }
             catch (Exception ex)
             {
-                Logger.Log("MapSharer: ERROR " + ex.Message);
+                Logger.Log("MapSharer: 错误 " + ex.Message);
             }
 
             string mapPath = DownloadMain(sha1, myGameId, mapName, out success);
@@ -335,12 +335,12 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
             {
                 if (success)
                 {
-                    Logger.Log("MapSharer: Download of map " + sha1 + " completed succesfully.");
+                    Logger.Log("MapSharer: 地图 " + sha1 + " 下载成功完成。");
                     MapDownloadComplete?.Invoke(null, new SHA1EventArgs(sha1, mapName));
                 }
                 else
                 {
-                    Logger.Log("MapSharer: Download of map " + sha1 + "failed! Reason: " + mapPath);
+                    Logger.Log("MapSharer: 地图 " + sha1 + " 下载失败！原因: " + mapPath);
                     MapDownloadFailed?.Invoke(null, new SHA1EventArgs(sha1, mapName));
                 }
 
@@ -348,7 +348,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
 
                 if (MapDownloadQueue.Count > 0)
                 {
-                    Logger.Log("MapSharer: Continuing custom map downloads.");
+                    Logger.Log("MapSharer: 正在继续自定义地图下载。");
 
                     object[] array = new object[3];
                     array[0] = MapDownloadQueue[0];
@@ -384,7 +384,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
 
                 try
                 {
-                    Logger.Log("MapSharer: Downloading URL: " + "http://mapdb.cncnet.org/" + myGame + "/" + sha1 + ".zip");
+                    Logger.Log("MapSharer: 正在下载 URL: " + "http://mapdb.cncnet.org/" + myGame + "/" + sha1 + ".zip");
                     webClient.DownloadFile("http://mapdb.cncnet.org/" + myGame + "/" + sha1 + ".zip", destinationFile.FullName);
                 }
                 catch (Exception ex)

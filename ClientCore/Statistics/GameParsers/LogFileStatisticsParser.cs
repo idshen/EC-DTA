@@ -29,11 +29,11 @@ namespace ClientCore.Statistics.GameParsers
 
             if (!statisticsFileInfo.Exists)
             {
-                Logger.Log("DTAStatisticsParser: Failed to read statistics: the log file does not exist.");
+                Logger.Log("DTAStatisticsParser: 无法读取统计信息：日志文件不存在。");
                 return;
             }
 
-            Logger.Log("Attempting to read statistics from " + fileName);
+            Logger.Log("尝试从 " + fileName + " 读取统计信息。");
 
             try
             {
@@ -59,13 +59,13 @@ namespace ClientCore.Statistics.GameParsers
                         if (isLoadedGame && currentPlayer == null)
                             currentPlayer = Statistics.Players.Find(p => p.Name == playerName);
 
-                        Logger.Log("Found player " + playerName);
+                        Logger.Log("找到玩家 " + playerName);
                         numPlayersFound++;
 
                         if (currentPlayer == null && playerName == "Computer" && numPlayersFound <= Statistics.NumberOfHumanPlayers)
                         {
                             // The player has been taken over by an AI during the match
-                            Logger.Log("Losing take-over AI found");
+                            Logger.Log("找到接管 AI");
                             takeoverAIs.Add(new PlayerStatistics("Computer", false, true, false, 0, 10, 255, 1));
                             currentPlayer = takeoverAIs[takeoverAIs.Count - 1];
                         }
@@ -83,13 +83,13 @@ namespace ClientCore.Statistics.GameParsers
                         if (isLoadedGame && currentPlayer == null)
                             currentPlayer = Statistics.Players.Find(p => p.Name == playerName);
 
-                        Logger.Log("Found player " + playerName);
+                        Logger.Log("找到玩家 " + playerName);
                         numPlayersFound++;
 
                         if (currentPlayer == null && playerName == "Computer" && numPlayersFound <= Statistics.NumberOfHumanPlayers)
                         {
                             // The player has been taken over by an AI during the match
-                            Logger.Log("Winning take-over AI found");
+                            Logger.Log("找到胜利接管 AI");
                             takeoverAIs.Add(new PlayerStatistics("Computer", false, true, false, 0, 10, 255, 1));
                             currentPlayer = takeoverAIs[takeoverAIs.Count - 1];
                         }
@@ -150,7 +150,7 @@ namespace ClientCore.Statistics.GameParsers
             }
             catch (Exception ex)
             {
-                Logger.Log("DTAStatisticsParser: Error parsing statistics from match! Message: " + ex.Message);
+                Logger.Log("DTAStatisticsParser: 解析比赛统计信息时出错！消息: " + ex.Message);
             }
         }
     }

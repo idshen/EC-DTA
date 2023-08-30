@@ -26,7 +26,7 @@ namespace DTAClient.Domain.LAN
         {
             if (parameters.Length != 9)
             {
-                Logger.Log("Ignoring LAN GAME message because of an incorrect number of parameters.");
+                Logger.Log("忽略 LAN GAME 消息，因为参数数量不正确。");
                 return false;
             }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using ClientCore;
 using ClientCore.Extensions;
 using Rampastring.Tools;
@@ -36,6 +37,38 @@ namespace DTAClient.Domain
             Enabled = iniFile.GetBooleanValue(sectionName, nameof(Enabled), true);
             BuildOffAlly = iniFile.GetBooleanValue(sectionName, nameof(BuildOffAlly), false);
             PlayerAlwaysOnNormalDifficulty = iniFile.GetBooleanValue(sectionName, nameof(PlayerAlwaysOnNormalDifficulty), false);
+            // 自动换行,检测中文-拆分/-添加@-组合,像素宽/15
+            if (HasChinese(GUIDescription))
+            {
+
+                string description = string.Empty;
+                string s1;
+                foreach (string s in GUIDescription.Split('/'))
+                {
+                    s1 = s + '@';
+                    if (s1.Length > 50)
+                    {
+
+                        s1 = InsertFormat(s1, 50, "@");
+                    }
+                    description += s1;
+                }
+
+                GUIDescription = description;
+            }
+            GUIDescription = GUIDescription.Replace("@", Environment.NewLine);
+        }
+
+        public bool HasChinese(string str)
+        {
+            return Regex.IsMatch(str, @"[\u4e00-\u9fa5]");
+        }
+
+        private string InsertFormat(string input, int interval, string value)
+        {
+            for (int i = interval; i < input.Length; i += interval + 1)
+                input = input.Insert(i, value);
+            return input;
         }
 
         public int Index { get; }

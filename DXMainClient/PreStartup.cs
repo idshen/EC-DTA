@@ -82,24 +82,24 @@ namespace DTAClient
 
             MainClientConstants.Initialize();
 
-            Logger.Log("***Logfile for " + MainClientConstants.GAME_NAME_LONG + " client***");
-            Logger.Log("Client version: " + Assembly.GetAssembly(typeof(PreStartup)).GetName().Version);
+            Logger.Log("***" + MainClientConstants.GAME_NAME_LONG + " 客户端日志文件***");
+            Logger.Log("客户端版本: " + Assembly.GetAssembly(typeof(PreStartup)).GetName().Version);
 
             // Log information about given startup params
             if (parameters.NoAudio)
             {
-                Logger.Log("Startup parameter: No audio");
+                Logger.Log("启动参数: 无音频");
 
                 // TODO fix
                 throw new NotImplementedException("-NOAUDIO is currently not implemented, please run the client without it.".L10N("Client:Main:NoAudio"));
             }
 
             if (parameters.MultipleInstanceMode)
-                Logger.Log("Startup parameter: Allow multiple client instances");
+                Logger.Log("启动参数: 允许多个客户端实例");
 
-            parameters.UnknownStartupParams.ForEach(p => Logger.Log("Unknown startup parameter: " + p));
+            parameters.UnknownStartupParams.ForEach(p => Logger.Log("未知的启动参数: " + p));
 
-            Logger.Log("Loading settings.");
+            Logger.Log("正在加载设置.");
 
             UserINISettings.Initialize(ClientConfiguration.Instance.SettingsIniName);
 
@@ -112,11 +112,11 @@ namespace DTAClient
 
                 if (translationFile.Exists)
                 {
-                    Logger.Log($"Loading generic translation file at {translationFile.FullName}");
+                    Logger.Log($"正在加载通用翻译文件，路径为 {translationFile.FullName}");
                     translation = new Translation(translationFile.FullName, UserINISettings.Instance.Translation);
                     if (translationThemeFile.Exists)
                     {
-                        Logger.Log($"Loading theme-specific translation file at {translationThemeFile.FullName}");
+                        Logger.Log($"正在加载主题特定的翻译文件，路径为 {translationThemeFile.FullName}");
                         translation.AppendValuesFromIniFile(translationThemeFile.FullName);
                     }
 
@@ -124,15 +124,15 @@ namespace DTAClient
                 }
                 else
                 {
-                    Logger.Log($"Failed to load a translation file. " +
-                        $"Neither {translationThemeFile.FullName} nor {translationFile.FullName} exist.");
+                    Logger.Log($"加载翻译文件失败. " +
+                        $" {translationThemeFile.FullName} 与 {translationFile.FullName} 均不存在.");
                 }
 
-                Logger.Log("Loaded translation: " + Translation.Instance.Name);
+                Logger.Log("已加载翻译: " + Translation.Instance.Name);
             }
             catch (Exception ex)
             {
-                Logger.Log("Failed to load the translation file. " + ex.Message);
+                Logger.Log("加载翻译文件失败. " + ex.Message);
                 Translation.Instance = new Translation(UserINISettings.Instance.Translation);
             }
 
@@ -147,12 +147,12 @@ namespace DTAClient
 
                     AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
                     {
-                        Logger.Log("Writing the translation stub file.");
+                        Logger.Log("正在写入翻译存根文件.");
                         var ini = Translation.Instance.DumpIni(UserINISettings.Instance.GenerateOnlyNewValuesInTranslationStub);
                         ini.WriteIniFile(stubPath);
                     };
 
-                    Logger.Log("Translation stub generation feature is now enabled. The stub file will be written when the client exits.");
+                    Logger.Log("翻译存根生成功能已启用.退出客户端时将写入存根文件.");
 
                     // Lookup all compile-time available strings
                     ClientCore.Generated.TranslationNotifier.Register();
@@ -163,7 +163,7 @@ namespace DTAClient
             }
             catch (Exception ex)
             {
-                Logger.Log("Failed to generate the translation stub: " + ex.Message);
+                Logger.Log("生成翻译存根失败: " + ex.Message);
             }
 
             // Delete obsolete files from old target project versions
@@ -197,15 +197,15 @@ namespace DTAClient
         public static void LogException(Exception ex, bool innerException = false)
         {
             if (!innerException)
-                Logger.Log("KABOOOOOOM!!! Info:");
+                Logger.Log("KABOOOOOOM!!! 信息:");
             else
-                Logger.Log("InnerException info:");
+                Logger.Log("内部异常信息:");
 
-            Logger.Log("Type: " + ex.GetType());
-            Logger.Log("Message: " + ex.Message);
-            Logger.Log("Source: " + ex.Source);
-            Logger.Log("TargetSite.Name: " + ex.TargetSite.Name);
-            Logger.Log("Stacktrace: " + ex.StackTrace);
+            Logger.Log("类型: " + ex.GetType());
+            Logger.Log("消息: " + ex.Message);
+            Logger.Log("来源: " + ex.Source);
+            Logger.Log("目标方法名称: " + ex.TargetSite.Name);
+            Logger.Log("堆栈跟踪: " + ex.StackTrace);
 
             if (ex.InnerException is not null)
                 LogException(ex.InnerException, true);

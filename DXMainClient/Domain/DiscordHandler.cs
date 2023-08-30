@@ -102,9 +102,9 @@ namespace DTAClient.Domain
             bool success = client.Initialize();
 
             if (success)
-                Logger.Log("DiscordHandler: Connected Discord RPC client.");
+                Logger.Log("DiscordHandler: 连接 Discord RPC 客户端。");
             else
-                Logger.Log("DiscordHandler: Failed to connect Discord RPC client.");
+                Logger.Log("DiscordHandler: 连接 Discord RPC 客户端失败。");
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace DTAClient.Domain
             // A hacky solution is to dispose current client object and create and initialize a new one.
             InitializeClient(); //client.Deinitialize();
 
-            Logger.Log("DiscordHandler: Disconnected Discord RPC client.");
+            Logger.Log("DiscordHandler: 断开 Discord RPC 客户端。");
         }
 
         /// <summary>
@@ -261,43 +261,43 @@ namespace DTAClient.Domain
 
         private void OnReady(object sender, ReadyMessage args)
         {
-            Logger.Log($"Discord: Received Ready from user {args.User.Username}");
+            Logger.Log($"Discord: 收到来自用户 {args.User.Username} 的准备消息");
             client?.SetPresence(CurrentPresence);
         }
 
         private void OnClose(object sender, CloseMessage args)
         {
-            Logger.Log($"Discord: Lost Connection with client because of '{args.Reason}'");
+            Logger.Log($"Discord: 因为 '{args.Reason}' 丢失与客户端的连接");
         }
 
         private void OnError(object sender, ErrorMessage args)
         {
-            Logger.Log($"Discord: Error occured. ({args.Code}) {args.Message}");
+            Logger.Log($"Discord: 发生错误. ({args.Code}) {args.Message}");
         }
 
         private void OnConnectionEstablished(object sender, ConnectionEstablishedMessage args)
         {
-            Logger.Log($"Discord: Pipe Connection Established. Valid on pipe #{args.ConnectedPipe}");
+            Logger.Log($"Discord: 管道连接已建立。在管道 #{args.ConnectedPipe} 上有效");
         }
 
         private void OnConnectionFailed(object sender, ConnectionFailedMessage args)
         {
-            Logger.Log($"Discord: Pipe Connection Failed. Could not connect to pipe #{args.FailedPipe}");
+            Logger.Log($"Discord: 管道连接失败。无法连接到管道 #{args.FailedPipe}");
         }
 
         private void OnPresenceUpdate(object sender, PresenceMessage args)
         {
-            Logger.Log($"Discord: Rich Presence Updated. State: {args.Presence?.State}; Details: {args.Presence?.Details}");
+            Logger.Log($"Discord: 丰富状态更新。状态: {args.Presence?.State}; 详情: {args.Presence?.Details}");
         }
 
         private void OnSubscribe(object sender, SubscribeMessage args)
         {
-            Logger.Log($"Discord: Subscribed: {args.Event}");
+            Logger.Log($"Discord: 订阅: {args.Event}");
         }
 
         private void OnUnsubscribe(object sender, UnsubscribeMessage args)
         {
-            Logger.Log($"Discord: Unsubscribed: {args.Event}");
+            Logger.Log($"Discord: 取消订阅: {args.Event}");
         }
 
         #endregion

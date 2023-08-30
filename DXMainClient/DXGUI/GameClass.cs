@@ -200,67 +200,67 @@ namespace DTAClient.DXGUI
             // Create host - this allows for things like DependencyInjection
             IHost host = Host.CreateDefaultBuilder()
                 .ConfigureServices((_, services) =>
-                    {
-                        // services (or service-like)
-                        services
-                            .AddSingleton<ServiceProvider>()
-                            .AddSingleton(windowManager)
-                            .AddSingleton(GraphicsDevice)
-                            .AddSingleton<GameCollection>()
-                            .AddSingleton<CnCNetUserData>()
-                            .AddSingleton<CnCNetManager>()
-                            .AddSingleton<TunnelHandler>()
-                            .AddSingleton<DiscordHandler>()
-                            .AddSingleton<PrivateMessageHandler>()
-                            .AddSingleton<MapLoader>();
+                {
+                    // services (or service-like)
+                    services
+                        .AddSingleton<ServiceProvider>()
+                        .AddSingleton(windowManager)
+                        .AddSingleton(GraphicsDevice)
+                        .AddSingleton<GameCollection>()
+                        .AddSingleton<CnCNetUserData>()
+                        .AddSingleton<CnCNetManager>()
+                        .AddSingleton<TunnelHandler>()
+                        .AddSingleton<DiscordHandler>()
+                        .AddSingleton<PrivateMessageHandler>()
+                        .AddSingleton<MapLoader>();
 
-                        // singleton xna controls - same instance on each request
-                        services
-                            .AddSingletonXnaControl<LoadingScreen>()
-                            .AddSingletonXnaControl<TopBar>()
-                            .AddSingletonXnaControl<OptionsWindow>()
-                            .AddSingletonXnaControl<PrivateMessagingWindow>()
-                            .AddSingletonXnaControl<PrivateMessagingPanel>()
-                            .AddSingletonXnaControl<LANLobby>()
-                            .AddSingletonXnaControl<CnCNetGameLobby>()
-                            .AddSingletonXnaControl<CnCNetGameLoadingLobby>()
-                            .AddSingletonXnaControl<CnCNetLobby>()
-                            .AddSingletonXnaControl<GameInProgressWindow>()
-                            .AddSingletonXnaControl<SkirmishLobby>()
-                            .AddSingletonXnaControl<MainMenu>()
-                            .AddSingletonXnaControl<MapPreviewBox>()
-                            .AddSingletonXnaControl<GameLaunchButton>()
-                            .AddSingletonXnaControl<PlayerExtraOptionsPanel>();
+                    // singleton xna controls - same instance on each request
+                    services
+                        .AddSingletonXnaControl<LoadingScreen>()
+                        .AddSingletonXnaControl<TopBar>()
+                        .AddSingletonXnaControl<OptionsWindow>()
+                        .AddSingletonXnaControl<PrivateMessagingWindow>()
+                        .AddSingletonXnaControl<PrivateMessagingPanel>()
+                        .AddSingletonXnaControl<LANLobby>()
+                        .AddSingletonXnaControl<CnCNetGameLobby>()
+                        .AddSingletonXnaControl<CnCNetGameLoadingLobby>()
+                        .AddSingletonXnaControl<CnCNetLobby>()
+                        .AddSingletonXnaControl<GameInProgressWindow>()
+                        .AddSingletonXnaControl<SkirmishLobby>()
+                        .AddSingletonXnaControl<MainMenu>()
+                        .AddSingletonXnaControl<MapPreviewBox>()
+                        .AddSingletonXnaControl<GameLaunchButton>()
+                        .AddSingletonXnaControl<PlayerExtraOptionsPanel>();
 
-                        // transient xna controls - new instance on each request
-                        services
-                            .AddTransientXnaControl<XNAControl>()
-                            .AddTransientXnaControl<XNAButton>()
-                            .AddTransientXnaControl<XNAClientButton>()
-                            .AddTransientXnaControl<XNAClientCheckBox>()
-                            .AddTransientXnaControl<XNAClientDropDown>()
-                            .AddTransientXnaControl<XNALinkButton>()
-                            .AddTransientXnaControl<XNAExtraPanel>()
-                            .AddTransientXnaControl<XNACheckBox>()
-                            .AddTransientXnaControl<XNADropDown>()
-                            .AddTransientXnaControl<XNALabel>()
-                            .AddTransientXnaControl<XNALinkLabel>()
-                            .AddTransientXnaControl<XNAListBox>()
-                            .AddTransientXnaControl<XNAMultiColumnListBox>()
-                            .AddTransientXnaControl<XNAPanel>()
-                            .AddTransientXnaControl<XNAProgressBar>()
-                            .AddTransientXnaControl<XNASuggestionTextBox>()
-                            .AddTransientXnaControl<XNATextBox>()
-                            .AddTransientXnaControl<XNATrackbar>()
-                            .AddTransientXnaControl<XNAChatTextBox>()
-                            .AddTransientXnaControl<ChatListBox>()
-                            .AddTransientXnaControl<GameLobbyCheckBox>()
-                            .AddTransientXnaControl<GameLobbyDropDown>()
-                            .AddTransientXnaControl<SettingCheckBox>()
-                            .AddTransientXnaControl<SettingDropDown>()
-                            .AddTransientXnaControl<FileSettingCheckBox>()
-                            .AddTransientXnaControl<FileSettingDropDown>();
-                    }
+                    // transient xna controls - new instance on each request
+                    services
+                        .AddTransientXnaControl<XNAControl>()
+                        .AddTransientXnaControl<XNAButton>()
+                        .AddTransientXnaControl<XNAClientButton>()
+                        .AddTransientXnaControl<XNAClientCheckBox>()
+                        .AddTransientXnaControl<XNAClientDropDown>()
+                        .AddTransientXnaControl<XNALinkButton>()
+                        .AddTransientXnaControl<XNAExtraPanel>()
+                        .AddTransientXnaControl<XNACheckBox>()
+                        .AddTransientXnaControl<XNADropDown>()
+                        .AddTransientXnaControl<XNALabel>()
+                        .AddTransientXnaControl<XNALinkLabel>()
+                        .AddTransientXnaControl<XNAListBox>()
+                        .AddTransientXnaControl<XNAMultiColumnListBox>()
+                        .AddTransientXnaControl<XNAPanel>()
+                        .AddTransientXnaControl<XNAProgressBar>()
+                        .AddTransientXnaControl<XNASuggestionTextBox>()
+                        .AddTransientXnaControl<XNATextBox>()
+                        .AddTransientXnaControl<XNATrackbar>()
+                        .AddTransientXnaControl<XNAChatTextBox>()
+                        .AddTransientXnaControl<ChatListBox>()
+                        .AddTransientXnaControl<GameLobbyCheckBox>()
+                        .AddTransientXnaControl<GameLobbyDropDown>()
+                        .AddTransientXnaControl<SettingCheckBox>()
+                        .AddTransientXnaControl<SettingDropDown>()
+                        .AddTransientXnaControl<FileSettingCheckBox>()
+                        .AddTransientXnaControl<FileSettingDropDown>();
+                }
                 )
                 .Build();
 

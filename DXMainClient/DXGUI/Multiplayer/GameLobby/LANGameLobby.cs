@@ -1,3 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using ClientGUI;
 using ClientCore;
 using DTAClient.Domain;
 using DTAClient.Domain.LAN;
@@ -10,14 +18,6 @@ using ClientCore.Extensions;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -193,22 +193,22 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Listener error: " + ex.Message);
+                    Logger.Log("监听器错误: " + ex.Message);
                     break;
                 }
 
-                Logger.Log("New client connected from " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
+                Logger.Log("新客户端连接自 " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
 
                 if (Players.Count >= MAX_PLAYER_COUNT)
                 {
-                    Logger.Log("Dropping client because of player limit.");
+                    Logger.Log("因玩家限制而断开客户端连接.");
                     client.Close();
                     continue;
                 }
 
                 if (Locked)
                 {
-                    Logger.Log("Dropping client because the game room is locked.");
+                    Logger.Log("因游戏房间已锁定而断开客户端连接.");
                     client.Close();
                     continue;
                 }
@@ -237,13 +237,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Socket error with client " + lpInfo.IPAddress + "; removing. Message: " + ex.Message);
+                    Logger.Log("与客户端 " + lpInfo.IPAddress + " 的套接字错误; 正在移除.消息: " + ex.Message);
                     break;
                 }
 
                 if (bytesRead == 0)
                 {
-                    Logger.Log("Connect attempt from " + lpInfo.IPAddress + " failed! (0 bytes read)");
+                    Logger.Log("来自 " + lpInfo.IPAddress + " 的连接尝试失败！(读取 0 字节)");
 
                     break;
                 }
@@ -330,7 +330,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     return;
             }
 
-            Logger.Log("Unknown LAN command from " + lpInfo.ToString() + " : " + data);
+            Logger.Log("来自 " + lpInfo.ToString() + " 的未知 LAN 命令: " + data);
         }
 
         private void CleanUpPlayer(LANPlayerInfo lpInfo)
@@ -365,7 +365,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Reading data from the server failed! Message: " + ex.Message);
+                    Logger.Log("从服务器读取数据失败！消息: " + ex.Message);
                     BtnLeaveGame_LeftClick(this, EventArgs.Empty);
                     break;
                 }
@@ -401,7 +401,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     continue;
                 }
 
-                Logger.Log("Reading data from the server failed (0 bytes received)!");
+                Logger.Log("从服务器读取数据失败（接收 0 字节）！");
                 BtnLeaveGame_LeftClick(this, EventArgs.Empty);
                 break;
             }
@@ -417,7 +417,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     return;
             }
 
-            Logger.Log("Unknown LAN command from the server: " + message);
+            Logger.Log("来自服务器的未知 LAN 命令: " + message);
         }
 
         protected override void BtnLeaveGame_LeftClick(object sender, EventArgs e)
@@ -549,7 +549,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             base.OnGameOptionChanged();
 
-            if (!IsHost)
+            if (!IsHost || Map == null || GameMode == null)
                 return;
 
             var sb = new ExtendedStringBuilder(GAME_OPTIONS_COMMAND + " ", true);
@@ -565,7 +565,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
 
             sb.Append(RandomSeed);
-            sb.Append(Map.SHA1);
+            sb.Append(Map.SHA1);        // 存在空值检测
             sb.Append(GameMode.Name);
             sb.Append(FrameSendRate);
             sb.Append(Convert.ToInt32(RemoveStartingLocations));
@@ -633,7 +633,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
             catch
             {
-                Logger.Log("Sending message to game host failed!");
+                Logger.Log("向游戏主机发送消息失败！");
             }
         }
 
@@ -737,6 +737,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         private void BroadcastGame()
         {
+            if (Map == null || GameMode == null)
+            {
+                return;
+            }
+
             var sb = new ExtendedStringBuilder("GAME ", true);
             sb.Separator = ProgramConstants.LAN_DATA_SEPARATOR;
             sb.Append(ProgramConstants.LAN_PROTOCOL_REVISION);
@@ -973,7 +978,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 AddNotice(("The game host has sent an invalid game options message! " +
                     "The game host's game version might be different from yours.").L10N("Client:Main:HostGameOptionInvalid"));
-                Logger.Log("Invalid game options message from host: " + data);
+                Logger.Log("来自主机的游戏选项消息无效: " + data);
                 return;
             }
 
@@ -1129,5 +1134,4 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         public string Message { get; private set; }
     }
-
 }

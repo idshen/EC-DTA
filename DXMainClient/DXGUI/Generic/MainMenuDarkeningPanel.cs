@@ -2,6 +2,7 @@
 using DTAClient.Domain;
 using DTAClient.Domain.Multiplayer;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
@@ -33,6 +34,7 @@ namespace DTAClient.DXGUI.Generic
         public ManualUpdateQueryWindow ManualUpdateQueryWindow;
         public UpdateWindow UpdateWindow;
         public ExtrasWindow ExtrasWindow;
+        public CreditsWindow CreditsWindow;
 
         public override void Initialize()
         {
@@ -65,6 +67,9 @@ namespace DTAClient.DXGUI.Generic
             ExtrasWindow = new ExtrasWindow(WindowManager);
             AddChild(ExtrasWindow);
 
+            CreditsWindow = new CreditsWindow(WindowManager);
+            AddChild(CreditsWindow); // 将致谢窗口添加为子控件
+
             foreach (XNAControl child in Children)
             {
                 child.Visible = false;
@@ -82,6 +87,9 @@ namespace DTAClient.DXGUI.Generic
 
         public void Show(XNAControl control)
         {
+            // 主菜单打开内部窗口时禁用主菜单的快捷键
+            ((MainMenu)Parent).DisableButtonHotkeys();
+
             foreach (XNAControl child in Children)
             {
                 child.Enabled = false;
@@ -98,11 +106,21 @@ namespace DTAClient.DXGUI.Generic
                 control.Enabled = true;
                 control.Visible = true;
                 control.IgnoreInputOnFrame = true;
+
+                // 获取窗口的中心点
+                var centerX = WindowManager.GraphicsDevice.Viewport.Width / 2;
+                var centerY = WindowManager.GraphicsDevice.Viewport.Height / 2;
+
+                // 设置鼠标位置为窗口中心
+                Mouse.SetPosition(centerX, centerY);
             }
         }
 
         public void Hide()
         {
+            // 主菜单关闭内部窗口时恢复主菜单的快捷键
+            ((MainMenu)Parent).SetButtonHotkeys();
+
             AlphaRate = -DarkeningPanel.ALPHA_RATE;
 
             foreach (XNAControl child in Children)

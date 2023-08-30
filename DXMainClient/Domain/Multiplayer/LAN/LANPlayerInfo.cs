@@ -105,7 +105,7 @@ namespace DTAClient.Domain.Multiplayer.LAN
             }
             catch
             {
-                Logger.Log("Sending message to " + ToString() + " failed!");
+                Logger.Log("发送消息到 " + ToString() + " 失败！");
             }
 
             TimeSinceLastSentMessage = TimeSpan.Zero;
@@ -151,7 +151,7 @@ namespace DTAClient.Domain.Multiplayer.LAN
                 catch (Exception ex)
                 {
                     //a socket error has occured
-                    Logger.Log("Socket error with client " + Name + "; removing. Message: " + ex.Message);
+                    Logger.Log("与客户端 " + Name + " 的套接字错误; 正在移除。消息: " + ex.Message);
                     ConnectionLost?.Invoke(this, EventArgs.Empty);
                     break;
                 }
@@ -206,7 +206,7 @@ namespace DTAClient.Domain.Multiplayer.LAN
                 }
                 catch (PingException ex)
                 {
-                    Logger.Log($"Caught an exception when pinging {Name} LAN player: {ex.Message}");
+                    Logger.Log($"在 pinging {Name} LAN 玩家时捕获异常: {ex.Message}");
                 }
             }
         }

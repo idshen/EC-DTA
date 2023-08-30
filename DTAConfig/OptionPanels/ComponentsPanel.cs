@@ -264,7 +264,7 @@ namespace DTAConfig.OptionPanels
 
         public void CancelAllDownloads()
         {
-            Logger.Log("Cancelling all custom component downloads.");
+            Logger.Log("取消所有自定义组件下载。");
 
             downloadCancelled = true;
 

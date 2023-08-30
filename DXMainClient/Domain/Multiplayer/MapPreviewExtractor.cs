@@ -32,14 +32,14 @@ namespace DTAClient.Domain.Multiplayer
 
             if (sectionKeys == null || sectionKeys.Count == 0)
             {
-                Logger.Log("MapPreviewExtractor: " + baseFilename + " - no [PreviewPack] exists, unable to extract preview.");
+                Logger.Log("MapPreviewExtractor: " + baseFilename + " - 无 [PreviewPack] 存在，无法提取预览。");
                 return null;
             }
 
             if (mapIni.GetStringValue("PreviewPack", "1", string.Empty) ==
                 "yAsAIAXQ5PDQ5PDQ6JQATAEE6PDQ4PDI4JgBTAFEAkgAJyAATAG0AydEAEABpAJIA0wBVA")
             {
-                Logger.Log("MapPreviewExtractor: " + baseFilename + " - Hidden preview detected, not extracting preview.");
+                Logger.Log("MapPreviewExtractor: " + baseFilename + " - 检测到隐藏预览，未提取预览。");
                 return null;
             }
 
@@ -49,7 +49,7 @@ namespace DTAClient.Domain.Multiplayer
 
             if (previewWidth < 1 || previewHeight < 1)
             {
-                Logger.Log("MapPreviewExtractor: " + baseFilename + " - [Preview] Size value is invalid, unable to extract preview.");
+                Logger.Log("MapPreviewExtractor: " + baseFilename + " - [Preview] 尺寸值无效，无法提取预览。");
                 return null;
             }
 
@@ -68,7 +68,7 @@ namespace DTAClient.Domain.Multiplayer
             }
             catch (Exception)
             {
-                Logger.Log("MapPreviewExtractor: " + baseFilename + " - [PreviewPack] is malformed, unable to extract preview.");
+                Logger.Log("MapPreviewExtractor: " + baseFilename + " - [PreviewPack] 格式错误，无法提取预览。");
                 return null;
             }
 

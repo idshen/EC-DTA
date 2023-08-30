@@ -926,7 +926,7 @@ namespace DTAClient.Online
             IRCUser user = UserList.Find(u => u.Name.ToUpper() == oldNickname.ToUpper());
             if (user == null)
             {
-                Logger.Log("DoUserNicknameChange: Failed to find user with nickname " + oldNickname);
+                Logger.Log("DoUserNicknameChange: 找不到昵称为 " + oldNickname + " 的用户.");
                 return;
             }
             string realOldNickname = user.Name; // To make sure that case matches

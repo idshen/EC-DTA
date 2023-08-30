@@ -12,6 +12,9 @@ using System.IO;
 using DTAClient.Domain;
 using Microsoft.Xna.Framework;
 using ClientCore.Extensions;
+using Microsoft.Xna.Framework.Input;
+using Rampastring.XNAUI.Input;
+using System.Diagnostics;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -38,7 +41,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             //InitPlayerOptionDropdowns(128, 98, 90, 48, 55, new Point(6, 24));
             InitPlayerOptionDropdowns();
 
-            btnLeaveGame.Text = "Main Menu".L10N("Client:Main:MainMenu");
+            btnLeaveGame.Text = "Button Cancel".L10N("Client:Main:ButtonCancel");
 
             //MapPreviewBox.EnableContextMenu = true;
 
@@ -64,6 +67,22 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         protected override void ToggleFavoriteMap()
         {
+            if (Map == null || GameMode == null)
+            {
+                // 如果未选择地图或游戏模式，则显示错误提示框
+                using var errorMsgBox = new XNAMessageBox(WindowManager, "错误", "尚未选择地图或游戏模式。", XNAMessageBoxButtons.OK);
+                errorMsgBox.OKClickedAction = (msgBox) =>
+                {
+                    // 移除提示框
+                    WindowManager.RemoveControl(msgBox.Parent ?? msgBox);
+                };
+
+                // 显示消息框
+                errorMsgBox.Show();
+
+                return;
+            }
+
             base.ToggleFavoriteMap();
 
             if (GameModeMap.IsFavorite)
@@ -296,7 +315,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
             catch (Exception ex)
             {
-                Logger.Log("Saving skirmish settings failed! Reason: " + ex.Message);
+                Logger.Log("保存战役设置失败！原因: " + ex.Message);
             }
         }
 
@@ -348,7 +367,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (player == null)
             {
-                Logger.Log("Failed to load human player information from skirmish settings!");
+                Logger.Log("无法从战役设置加载人类玩家信息！");
                 InitDefaultSettings();
                 return;
             }
@@ -378,7 +397,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                 if (aiPlayer == null)
                 {
-                    Logger.Log("Failed to load AI player information from skirmish settings!");
+                    Logger.Log("无法从战役设置加载 AI 玩家信息！");
                     InitDefaultSettings();
                     return;
                 }
@@ -399,7 +418,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                         int gameModeMatchIndex = GameMode.ForcedDropDownValues.FindIndex(p => p.Key.Equals(dd.Name));
                         if (gameModeMatchIndex > -1)
                         {
-                            Logger.Log("Dropdown '" + dd.Name + "' has forced value in gamemode - saved settings ignored.");
+                            Logger.Log("下拉菜单 '" + dd.Name + "' 在游戏模式中有强制值 - 保存的设置被忽略.");
                             continue;
                         }
                     }
@@ -409,7 +428,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                         int gameModeMatchIndex = Map.ForcedDropDownValues.FindIndex(p => p.Key.Equals(dd.Name));
                         if (gameModeMatchIndex > -1)
                         {
-                            Logger.Log("Dropdown '" + dd.Name + "' has forced value in map - saved settings ignored.");
+                            Logger.Log("下拉菜单 '" + dd.Name + "' 在地图中有强制值 - 保存的设置被忽略.");
                             continue;
                         }
                     }
@@ -427,7 +446,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                         int gameModeMatchIndex = GameMode.ForcedCheckBoxValues.FindIndex(p => p.Key.Equals(cb.Name));
                         if (gameModeMatchIndex > -1)
                         {
-                            Logger.Log("Checkbox '" + cb.Name + "' has forced value in gamemode - saved settings ignored.");
+                            Logger.Log("复选框 '" + cb.Name + "' 在游戏模式中有强制值 - 保存的设置被忽略.");
                             continue;
                         }
                     }
@@ -437,7 +456,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                         int gameModeMatchIndex = Map.ForcedCheckBoxValues.FindIndex(p => p.Key.Equals(cb.Name));
                         if (gameModeMatchIndex > -1)
                         {
-                            Logger.Log("Checkbox '" + cb.Name + "' has forced value in map - saved settings ignored.");
+                            Logger.Log("复选框 '" + cb.Name + "' 在地图中有强制值 - 保存的设置被忽略.");
                             continue;
                         }
                     }

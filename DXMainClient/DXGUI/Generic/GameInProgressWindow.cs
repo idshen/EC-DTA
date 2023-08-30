@@ -108,7 +108,7 @@ namespace DTAClient.DXGUI
             }
             catch (Exception ex)
             {
-                Logger.Log("Exception when deleting error log files! Message: " + ex.Message);
+                Logger.Log("删除错误日志文件时出现异常！消息: " + ex.Message);
                 deletingLogFilesFailed = true;
             }
 #endif
@@ -233,7 +233,7 @@ namespace DTAClient.DXGUI
                     if (!errorLogDirectoryInfo.Exists)
                         errorLogDirectoryInfo.Create();
 
-                    Logger.Log("The game crashed! Copying " + filename + " file.");
+                    Logger.Log("游戏崩溃了！正在复制 " + filename + " 文件。");
 
                     string timeStamp = dateTime.HasValue ? dateTime.Value.ToString("_yyyy_MM_dd_HH_mm") : "";
 
@@ -246,7 +246,7 @@ namespace DTAClient.DXGUI
             }
             catch (Exception ex)
             {
-                Logger.Log("An error occured while checking for " + filename + " file. Message: " + ex.Message);
+                Logger.Log("检查 " + filename + " 文件时发生错误。消息: " + ex.Message);
             }
             return copied;
         }
@@ -275,7 +275,7 @@ namespace DTAClient.DXGUI
                         if (!syncErrorLogDirectoryInfo.Exists)
                             syncErrorLogDirectoryInfo.Create();
 
-                        Logger.Log("There was a sync error! Copying file " + filename);
+                        Logger.Log("发生同步错误！正在复制文件 " + filename);
 
                         string timeStamp = dateTime.HasValue ? dateTime.Value.ToString("_yyyy_MM_dd_HH_mm") : "";
 
@@ -290,7 +290,7 @@ namespace DTAClient.DXGUI
             }
             catch (Exception ex)
             {
-                Logger.Log("An error occured while checking for SYNCX.TXT files. Message: " + ex.Message);
+                Logger.Log("检查 SYNCX.TXT 文件时发生错误。消息: " + ex.Message);
             }
             return copied;
         }
@@ -360,7 +360,7 @@ namespace DTAClient.DXGUI
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("ProcessScreenshots: An error occured trying to create Screenshots directory. Message: " + ex.Message);
+                    Logger.Log("ProcessScreenshots: 尝试创建 Screenshots 目录时发生错误。消息: " + ex.Message);
                     return;
                 }
             }
@@ -378,11 +378,11 @@ namespace DTAClient.DXGUI
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("ProcessScreenshots: Error occured when trying to save " + Path.GetFileNameWithoutExtension(file.FullName) + ".png. Message: " + ex.Message);
+                    Logger.Log("ProcessScreenshots: 尝试保存 " + Path.GetFileNameWithoutExtension(file.FullName) + ".png 时发生错误。消息: " + ex.Message);
                     continue;
                 }
 
-                Logger.Log("ProcessScreenshots: " + Path.GetFileNameWithoutExtension(file.FullName) + ".png has been saved to Screenshots directory.");
+                Logger.Log("ProcessScreenshots: " + Path.GetFileNameWithoutExtension(file.FullName) + ".png 已保存到 Screenshots 目录。");
                 file.Delete();
             }
         }

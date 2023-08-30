@@ -212,7 +212,7 @@ namespace DTAConfig
                 ddCategory.SelectedIndex = 0;
             }
             else
-                Logger.Log("No keyboard game commands exist!");
+                Logger.Log("没有键盘游戏命令！");
 
             GameProcessLogic.GameProcessExited += GameProcessLogic_GameProcessExited;
 

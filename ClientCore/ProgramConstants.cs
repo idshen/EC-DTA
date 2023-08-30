@@ -37,7 +37,7 @@ namespace ClientCore
         public const int LAN_PORT = 1234;
         public const int LAN_INGAME_PORT = 1234;
         public const int LAN_LOBBY_PORT = 1232;
-        public const int LAN_GAME_LOBBY_PORT = 1233;
+        public const int LAN_GAME_LOBBY_PORT = 1233;            // ¼àÌý¶Ë¿Ú
         public const char LAN_DATA_SEPARATOR = (char)01;
         public const char LAN_MESSAGE_SEPARATOR = (char)02;
 

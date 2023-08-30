@@ -69,12 +69,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     if (!String.IsNullOrEmpty(objectRemapPair.Value))
                     {
                         mapIni.SetStringValue(sectionName, matchingSectionKVP.Key, matchingSectionKVP.Value.Replace(id, objectRemapPair.Value));
-                        Logger.Log("MapCodeHelper: Changed an instance of '" + sectionName + "' object '" + id + "' into '" + objectRemapPair.Value + "'.");
+                        Logger.Log("MapCodeHelper: 将 '" + sectionName + "' 对象 '" + id + "' 的实例更改为 '" + objectRemapPair.Value + "'.");
                     }
                     else
                     {
                         mapIni.SetStringValue(sectionName, matchingSectionKVP.Key, "");
-                        Logger.Log("MapCodeHelper: Removed an instance of '" + sectionName + "' object '" + id + "'.");
+                        Logger.Log("MapCodeHelper: 移除了 '" + sectionName + "' 对象 '" + id + "' 的实例.");
                     }
                 }
             }

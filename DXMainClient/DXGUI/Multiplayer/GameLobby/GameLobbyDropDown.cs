@@ -112,7 +112,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (String.IsNullOrEmpty(spawnIniOption))
             {
-                Logger.Log("GameLobbyDropDown.WriteSpawnIniCode: " + Name + " has no associated spawn INI option!");
+                Logger.Log("GameLobbyDropDown.WriteSpawnIniCode: " + Name + " 没有关联的 spawn INI 选项！");
                 return;
             }
 

@@ -185,7 +185,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
             else
             {
-                Logger.Log("MultiplayerGameLobby: Saved games are not available!");
+                Logger.Log("MultiplayerGameLobby: 保存的游戏不可用！");
             }
 
             ParseHostPlayerControls();
@@ -235,7 +235,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         private void FSWEvent(FileSystemEventArgs e)
         {
-            Logger.Log("FSW Event: " + e.FullPath);
+            Logger.Log("FSW 事件: " + e.FullPath);
 
             if (Path.GetFileName(e.FullPath) == "SAVEGAME.NET")
             {
@@ -609,7 +609,6 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             UpdateMapPreviewBoxEnabledStatus();
             PlayerExtraOptionsPanel?.SetIsHost(isHost);
-            //MapPreviewBox.EnableContextMenu = IsHost;
 
             btnLaunchGame.Text = IsHost ? BTN_LAUNCH_GAME : BTN_LAUNCH_READY;
 
@@ -655,6 +654,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             LoadDefaultGameModeMap();
 
+            // 清空聊天消息并显示提示
             lbChatMessages.Clear();
             lbChatMessages.TopIndex = 0;
 
@@ -1118,6 +1118,22 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         protected override void ToggleFavoriteMap()
         {
+            if (Map == null || GameMode == null)
+            {
+                // 如果未选择地图或游戏模式，则显示错误提示框
+                using var errorMsgBox = new XNAMessageBox(WindowManager, "错误", "尚未选择地图或游戏模式。", XNAMessageBoxButtons.OK);
+                errorMsgBox.OKClickedAction = (msgBox) =>
+                {
+                    // 移除提示框
+                    WindowManager.RemoveControl(msgBox.Parent ?? msgBox);
+                };
+
+                // 显示消息框
+                errorMsgBox.Show();
+
+                return;
+            }
+
             base.ToggleFavoriteMap();
 
             if (GameModeMap.IsFavorite || !IsHost)

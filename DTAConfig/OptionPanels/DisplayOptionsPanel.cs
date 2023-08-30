@@ -441,7 +441,7 @@ namespace DTAConfig.OptionPanels
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Setting TSCompatFixDeclined failed! Returned error: " + ex.Message);
+                    Logger.Log("…Ë÷√ TSCompatFixDeclined  ß∞‹£°∑µªÿ¥ÌŒÛ: " + ex.Message);
                 }
             }
             catch { }
@@ -464,7 +464,7 @@ namespace DTAConfig.OptionPanels
 
                     sdbinst.WaitForExit();
 
-                    Logger.Log("DTA/TI/TS Compatibility Fix succesfully uninstalled.");
+                    Logger.Log("DTA/TI/TS ºÊ»›–‘–ﬁ∏¥≥…π¶–∂‘ÿ°£");
                     XNAMessageBox.Show(WindowManager, "Compatibility Fix Uninstalled".L10N("Client:DTAConfig:TSFixUninstallTitle"),
                         "The DTA/TI/TS Compatibility Fix has been succesfully uninstalled.".L10N("Client:DTAConfig:TSFixUninstallText"));
 
@@ -478,7 +478,7 @@ namespace DTAConfig.OptionPanels
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Uninstalling DTA/TI/TS Compatibility Fix failed. Error message: " + ex.Message);
+                    Logger.Log("–∂‘ÿ DTA/TI/TS ºÊ»›–‘–ﬁ∏¥ ß∞‹°£¥ÌŒÛœ˚œ¢: " + ex.Message);
                     XNAMessageBox.Show(WindowManager, "Uninstalling Compatibility Fix Failed".L10N("Client:DTAConfig:TSFixUninstallFailTitle"),
                         "Uninstalling DTA/TI/TS Compatibility Fix failed. Returned error:".L10N("Client:DTAConfig:TSFixUninstallFailText") + " " + ex.Message);
                 }
@@ -492,7 +492,7 @@ namespace DTAConfig.OptionPanels
 
                 sdbinst.WaitForExit();
 
-                Logger.Log("DTA/TI/TS Compatibility Fix succesfully installed.");
+                Logger.Log("DTA/TI/TS ºÊ»›–‘–ﬁ∏¥≥…π¶∞≤◊∞°£");
                 XNAMessageBox.Show(WindowManager, "Compatibility Fix Installed".L10N("Client:DTAConfig:TSFixInstallSuccessTitle"),
                     "The DTA/TI/TS Compatibility Fix has been succesfully installed.".L10N("Client:DTAConfig:TSFixInstallSuccessText"));
 
@@ -506,7 +506,7 @@ namespace DTAConfig.OptionPanels
             }
             catch (Exception ex)
             {
-                Logger.Log("Installing DTA/TI/TS Compatibility Fix failed. Error message: " + ex.Message);
+                Logger.Log("∞≤◊∞ DTA/TI/TS ºÊ»›–‘–ﬁ∏¥ ß∞‹°£¥ÌŒÛœ˚œ¢: " + ex.Message);
                 XNAMessageBox.Show(WindowManager, "Installing Compatibility Fix Failed".L10N("Client:DTAConfig:TSFixInstallFailTitle"),
                     "Installing DTA/TI/TS Compatibility Fix failed. Error message:".L10N("Client:DTAConfig:TSFixInstallFailText") + " " + ex.Message);
             }
@@ -529,7 +529,7 @@ namespace DTAConfig.OptionPanels
 
                     btnMapEditorCompatibilityFix.Text = "Enable".L10N("Client:DTAConfig:TSFEnable");
 
-                    Logger.Log("FinalSun Compatibility Fix succesfully uninstalled.");
+                    Logger.Log("FinalSun ºÊ»›–‘–ﬁ∏¥≥…π¶–∂‘ÿ°£");
                     XNAMessageBox.Show(WindowManager, "Compatibility Fix Uninstalled".L10N("Client:DTAConfig:TSFinalSunFixUninstallTitle"),
                         "The FinalSun Compatibility Fix has been succesfully uninstalled.".L10N("Client:DTAConfig:TSFinalSunFixUninstallText"));
 
@@ -537,7 +537,7 @@ namespace DTAConfig.OptionPanels
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Uninstalling FinalSun Compatibility Fix failed. Error message: " + ex.Message);
+                    Logger.Log("–∂‘ÿ FinalSun ºÊ»›–‘–ﬁ∏¥ ß∞‹°£¥ÌŒÛœ˚œ¢: " + ex.Message);
                     XNAMessageBox.Show(WindowManager, "Uninstalling Compatibility Fix Failed".L10N("Client:DTAConfig:TSFinalSunFixUninstallFailedTitle"),
                         "Uninstalling FinalSun Compatibility Fix failed. Error message:".L10N("Client:DTAConfig:TSFinalSunFixUninstallFailedText") + " " + ex.Message);
                 }
@@ -557,7 +557,7 @@ namespace DTAConfig.OptionPanels
 
                 btnMapEditorCompatibilityFix.Text = "Disable".L10N("Client:DTAConfig:TSDisable");
 
-                Logger.Log("FinalSun Compatibility Fix succesfully installed.");
+                Logger.Log("FinalSun ºÊ»›–‘–ﬁ∏¥≥…π¶∞≤◊∞°£");
                 XNAMessageBox.Show(WindowManager, "Compatibility Fix Installed".L10N("Client:DTAConfig:TSFinalSunCompatibilityFixInstalledTitle"),
                     "The FinalSun Compatibility Fix has been succesfully installed.".L10N("Client:DTAConfig:TSFinalSunCompatibilityFixInstalledText"));
 
@@ -565,7 +565,7 @@ namespace DTAConfig.OptionPanels
             }
             catch (Exception ex)
             {
-                Logger.Log("Installing FinalSun Compatibility Fix failed. Error message: " + ex.Message);
+                Logger.Log("∞≤◊∞ FinalSun ºÊ»›–‘–ﬁ∏¥ ß∞‹°£¥ÌŒÛœ˚œ¢: " + ex.Message);
                 XNAMessageBox.Show(WindowManager, "Installing Compatibility Fix Failed".L10N("Client:DTAConfig:TSFinalSunCompatibilityFixInstalledFailedTitle"),
                     "Installing FinalSun Compatibility Fix failed. Error message:".L10N("Client:DTAConfig:TSFinalSunCompatibilityFixInstalledFailedText") + " " + ex.Message);
             }

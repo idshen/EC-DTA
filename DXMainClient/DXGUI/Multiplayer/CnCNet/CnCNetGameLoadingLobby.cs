@@ -221,7 +221,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                     return;
             }
 
-            Logger.Log("Unhandled CTCP command: " + e.Message + " from " + e.UserName);
+            Logger.Log("未处理的 CTCP 命令: " + e.Message + " 来自 " + e.UserName);
         }
 
         /// <summary>

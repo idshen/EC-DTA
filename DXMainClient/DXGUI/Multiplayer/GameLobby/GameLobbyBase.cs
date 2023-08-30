@@ -17,6 +17,7 @@ using DTAClient.DXGUI.Multiplayer.CnCNet;
 using DTAClient.Online.EventArguments;
 using ClientCore.Extensions;
 using TextCopy;
+using Microsoft.Xna.Framework.Input;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -206,10 +207,14 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             btnLeaveGame = FindChild<XNAClientButton>(nameof(btnLeaveGame));
             btnLeaveGame.LeftClick += BtnLeaveGame_LeftClick;
+            btnLeaveGame.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("17返回菜单", btnLeaveGame);   // 从 INI 文件加载 btnCancel 的快捷键
 
             btnLaunchGame = FindChild<GameLaunchButton>(nameof(btnLaunchGame));
             btnLaunchGame.LeftClick += BtnLaunchGame_LeftClick;
             btnLaunchGame.InitStarDisplay(RankTextures);
+            btnLaunchGame.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("16启动游戏", btnLaunchGame);   // 从 INI 文件加载 btnCancel 的快捷键
 
             MapPreviewBox = FindChild<MapPreviewBox>("MapPreviewBox");
             MapPreviewBox.SetFields(Players, AIPlayers, MPColors, GameOptionsIni.GetStringValue("General", "Sides", String.Empty).Split(','), GameOptionsIni);
@@ -280,6 +285,78 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             DropDowns.ForEach(dd => dd.SelectedIndexChanged += Dropdown_SelectedIndexChanged);
 
             InitializeGameOptionPresetUI();
+        }
+
+        // 从 INI 文件加载快捷键
+        private static void LoadHotkeyForButton(string actionName, XNAClientButton button)
+        {
+            string iniFilePath = Path.Combine("Resources", "DIY", "快捷键.ini");
+            if (File.Exists(iniFilePath))
+            {
+                var lines = File.ReadAllLines(iniFilePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('=');
+                    if (parts.Length == 2)
+                    {
+                        string action = parts[0].Trim();
+                        string key = parts[1].Trim();
+
+                        if (action == actionName)
+                        {
+                            button.HotKey = ParseKey(key);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Logger.Log($"无法找到快捷键文件: {iniFilePath}");
+            }
+        }
+
+        private static Keys ParseKey(string keyString)
+        {
+            return keyString switch
+            {
+                "Enter" => Keys.Enter,
+                "Escape" => Keys.Escape,
+                "C" => Keys.C,
+                "L" => Keys.L,
+                "S" => Keys.S,
+                "M" => Keys.M,
+                "N" => Keys.N,
+                "O" => Keys.O,
+                "E" => Keys.E,
+                "T" => Keys.T,
+                "R" => Keys.R,
+                "X" => Keys.X,
+                "A" => Keys.A,
+                "D" => Keys.D,
+                "W" => Keys.W,
+                "Q" => Keys.Q,
+                "F" => Keys.F,
+                "Z" => Keys.Z,
+                "V" => Keys.V,
+                "B" => Keys.B,
+                "P" => Keys.P,
+                "I" => Keys.I,
+                "H" => Keys.H,
+                "Space" => Keys.Space,
+                "Tab" => Keys.Tab,
+                "Left" => Keys.Left,
+                "Right" => Keys.Right,
+                "Up" => Keys.Up,
+                "Down" => Keys.Down,
+                "Back" => Keys.Back,
+                "Delete" => Keys.Delete,
+                "Home" => Keys.Home,
+                "End" => Keys.End,
+                "PageUp" => Keys.PageUp,
+                "PageDown" => Keys.PageDown,
+                _ => Keys.None // 默认返回 None
+            };
         }
 
         /// <summary>

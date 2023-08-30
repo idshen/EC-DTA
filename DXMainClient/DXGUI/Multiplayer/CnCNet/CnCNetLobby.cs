@@ -24,6 +24,7 @@ using ClientCore.Extensions;
 using SixLabors.ImageSharp;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
+using Microsoft.Xna.Framework.Input;
 
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
@@ -168,6 +169,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnNewGame.Text = "Create Game".L10N("Client:Main:CreateGame");
             btnNewGame.AllowClick = false;
             btnNewGame.LeftClick += BtnNewGame_LeftClick;
+            btnNewGame.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("18创建房间", btnNewGame);   // 从 INI 文件加载 btnCancel 的快捷键
 
             btnJoinGame = new XNAClientButton(WindowManager);
             btnJoinGame.Name = nameof(btnJoinGame);
@@ -176,6 +179,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnJoinGame.Text = "Join Game".L10N("Client:Main:JoinGame");
             btnJoinGame.AllowClick = false;
             btnJoinGame.LeftClick += BtnJoinGame_LeftClick;
+            btnJoinGame.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("19加入房间", btnJoinGame);   // 从 INI 文件加载 btnCancel 的快捷键
 
             btnLogout = new XNAClientButton(WindowManager);
             btnLogout.Name = nameof(btnLogout);
@@ -183,6 +188,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
             btnLogout.Text = "Log Out".L10N("Client:Main:LogOut");
             btnLogout.LeftClick += BtnLogout_LeftClick;
+            btnLogout.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("20退出大厅", btnLogout);   // 从 INI 文件加载 btnCancel 的快捷键
 
             var gameListRectangle = new Rectangle(
                 btnNewGame.X, 41,
@@ -355,7 +362,6 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             AddChild(btnGameSortAlpha);
             AddChild(btnGameFilterOptions);
 
-
             panelGameFilters.VisibleChanged += GameFiltersPanel_VisibleChanged;
 
             CnCNetPlayerCountTask.CnCNetGameCountUpdated += OnCnCNetGameCountUpdated;
@@ -368,6 +374,78 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             WindowManager.CenterControlOnScreen(this);
 
             PostUIInit();
+        }
+
+        // 从 INI 文件加载快捷键
+        private static void LoadHotkeyForButton(string actionName, XNAClientButton button)
+        {
+            string iniFilePath = Path.Combine("Resources", "DIY", "快捷键.ini");
+            if (File.Exists(iniFilePath))
+            {
+                var lines = File.ReadAllLines(iniFilePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('=');
+                    if (parts.Length == 2)
+                    {
+                        string action = parts[0].Trim();
+                        string key = parts[1].Trim();
+
+                        if (action == actionName)
+                        {
+                            button.HotKey = ParseKey(key);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Logger.Log($"无法找到快捷键文件: {iniFilePath}");
+            }
+        }
+
+        private static Keys ParseKey(string keyString)
+        {
+            return keyString switch
+            {
+                "Enter" => Keys.Enter,
+                "Escape" => Keys.Escape,
+                "C" => Keys.C,
+                "L" => Keys.L,
+                "S" => Keys.S,
+                "M" => Keys.M,
+                "N" => Keys.N,
+                "O" => Keys.O,
+                "E" => Keys.E,
+                "T" => Keys.T,
+                "R" => Keys.R,
+                "X" => Keys.X,
+                "A" => Keys.A,
+                "D" => Keys.D,
+                "W" => Keys.W,
+                "Q" => Keys.Q,
+                "F" => Keys.F,
+                "Z" => Keys.Z,
+                "V" => Keys.V,
+                "B" => Keys.B,
+                "P" => Keys.P,
+                "I" => Keys.I,
+                "H" => Keys.H,
+                "Space" => Keys.Space,
+                "Tab" => Keys.Tab,
+                "Left" => Keys.Left,
+                "Right" => Keys.Right,
+                "Up" => Keys.Up,
+                "Down" => Keys.Down,
+                "Back" => Keys.Back,
+                "Delete" => Keys.Delete,
+                "Home" => Keys.Home,
+                "End" => Keys.End,
+                "PageUp" => Keys.PageUp,
+                "PageDown" => Keys.PageDown,
+                _ => Keys.None // 默认返回 None
+            };
         }
 
         private void BtnGameSortAlpha_LeftClick(object sender, EventArgs e)
@@ -1192,7 +1270,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                     return;
             }
 
-            Logger.Log("Unhandled private CTCP command: " + e.Message + " from " + e.Sender);
+            Logger.Log("未处理的私有 CTCP 命令: " + e.Message + " 来自 " + e.Sender);
         }
 
         private void HandleGameInviteCommand(string sender, string argumentsString)
@@ -1465,7 +1543,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             if (splitMessage.Length != 11)
             {
-                Logger.Log("Ignoring CTCP game message because of an invalid amount of parameters.");
+                Logger.Log("忽略 CTCP 游戏消息，因为参数数量无效。");
                 return;
             }
 
@@ -1554,7 +1632,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             }
             catch (Exception ex)
             {
-                Logger.Log("Game parsing error: " + ex.Message);
+                Logger.Log("游戏解析错误: " + ex.Message);
             }
         }
 

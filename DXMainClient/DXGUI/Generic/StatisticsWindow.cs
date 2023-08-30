@@ -1,4 +1,8 @@
-﻿using ClientCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.IO;
+using ClientCore;
 using ClientCore.Statistics;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer;
@@ -8,10 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
+using Microsoft.Xna.Framework.Input;
 namespace DTAClient.DXGUI.Generic
 {
     public class StatisticsWindow : XNAWindow
@@ -137,6 +138,8 @@ namespace DTAClient.DXGUI.Generic
             btnReturnToMenu.ClientRectangle = new Rectangle(270, 486, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT);
             btnReturnToMenu.Text = "Return to Main Menu".L10N("Client:Main:ReturnToMainMenu");
             btnReturnToMenu.LeftClick += BtnReturnToMenu_LeftClick;
+            btnReturnToMenu.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("23返回", btnReturnToMenu);   // 从 INI 文件加载 btnCancel 的快捷键
 
             var btnClearStatistics = new XNAClientButton(WindowManager);
             btnClearStatistics.Name = nameof(btnClearStatistics);
@@ -144,6 +147,8 @@ namespace DTAClient.DXGUI.Generic
             btnClearStatistics.Text = "Clear Statistics".L10N("Client:Main:ClearStatistics");
             btnClearStatistics.LeftClick += BtnClearStatistics_LeftClick;
             btnClearStatistics.Visible = false;
+            btnClearStatistics.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("24删除数据", btnClearStatistics);   // 从 INI 文件加载 btnCancel 的快捷键
 
             chkIncludeSpectatedGames = new XNAClientCheckBox(WindowManager);
 
@@ -418,6 +423,78 @@ namespace DTAClient.DXGUI.Generic
             ListGames();
 
             StatisticsManager.Instance.GameAdded += Instance_GameAdded;
+        }
+
+        // 从 INI 文件加载快捷键
+        private static void LoadHotkeyForButton(string actionName, XNAClientButton button)
+        {
+            string iniFilePath = Path.Combine("Resources", "DIY", "快捷键.ini");
+            if (File.Exists(iniFilePath))
+            {
+                var lines = File.ReadAllLines(iniFilePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('=');
+                    if (parts.Length == 2)
+                    {
+                        string action = parts[0].Trim();
+                        string key = parts[1].Trim();
+
+                        if (action == actionName)
+                        {
+                            button.HotKey = ParseKey(key);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Logger.Log($"无法找到快捷键文件: {iniFilePath}");
+            }
+        }
+
+        private static Keys ParseKey(string keyString)
+        {
+            return keyString switch
+            {
+                "Enter" => Keys.Enter,
+                "Escape" => Keys.Escape,
+                "C" => Keys.C,
+                "L" => Keys.L,
+                "S" => Keys.S,
+                "M" => Keys.M,
+                "N" => Keys.N,
+                "O" => Keys.O,
+                "E" => Keys.E,
+                "T" => Keys.T,
+                "R" => Keys.R,
+                "X" => Keys.X,
+                "A" => Keys.A,
+                "D" => Keys.D,
+                "W" => Keys.W,
+                "Q" => Keys.Q,
+                "F" => Keys.F,
+                "Z" => Keys.Z,
+                "V" => Keys.V,
+                "B" => Keys.B,
+                "P" => Keys.P,
+                "I" => Keys.I,
+                "H" => Keys.H,
+                "Space" => Keys.Space,
+                "Tab" => Keys.Tab,
+                "Left" => Keys.Left,
+                "Right" => Keys.Right,
+                "Up" => Keys.Up,
+                "Down" => Keys.Down,
+                "Back" => Keys.Back,
+                "Delete" => Keys.Delete,
+                "Home" => Keys.Home,
+                "End" => Keys.End,
+                "PageUp" => Keys.PageUp,
+                "PageDown" => Keys.PageDown,
+                _ => Keys.None // 默认返回 None
+            };
         }
 
         private void Instance_GameAdded(object sender, EventArgs e)

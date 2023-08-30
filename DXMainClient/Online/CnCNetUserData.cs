@@ -57,12 +57,12 @@ namespace DTAClient.Online
                 if (listFile.Exists)
                     return File.ReadAllLines(listFile.FullName).ToList();
 
-                Logger.Log($"Loading {path} failed! File does not exist.");
+                Logger.Log($"加载 {path} 失败！文件不存在.");
                 return new();
             }
             catch
             {
-                Logger.Log($"Loading {path} list failed!");
+                Logger.Log($"加载 {path} 列表失败！");
                 return new();
             }
         }
@@ -76,19 +76,19 @@ namespace DTAClient.Online
                 if (listFile.Exists)
                     return JsonSerializer.Deserialize<List<T>>(File.ReadAllText(listFile.FullName)) ?? new List<T>();
 
-                Logger.Log($"Loading {path} failed! File does not exist.");
+                Logger.Log($"加载 {path} 失败！文件不存在.");
                 return new();
             }
             catch
             {
-                Logger.Log($"Loading {path} list failed!");
+                Logger.Log($"加载 {path} 列表失败！");
                 return new();
             }
         }
 
         private static void SaveTextList(string path, List<string> textList)
         {
-            Logger.Log($"Saving {path}.");
+            Logger.Log($"正在保存 {path}.");
 
             try
             {
@@ -99,13 +99,13 @@ namespace DTAClient.Online
             }
             catch (Exception ex)
             {
-                Logger.Log($"Saving {path} failed! Error message: " + ex.Message);
+                Logger.Log($"保存 {path} 失败！错误消息: " + ex.Message);
             }
         }
 
         private static void SaveJsonList<T>(string path, IReadOnlyCollection<T> jsonList)
         {
-            Logger.Log($"Saving {path}.");
+            Logger.Log($"正在保存 {path}.");
 
             try
             {
@@ -116,7 +116,7 @@ namespace DTAClient.Online
             }
             catch (Exception ex)
             {
-                Logger.Log($"Saving {path} failed! Error message: " + ex.Message);
+                Logger.Log($"保存 {path} 失败！错误消息: " + ex.Message);
             }
         }
 

@@ -39,19 +39,19 @@ namespace DTAClient
             if (!resourcesDirectory.Exists)
                 throw new DirectoryNotFoundException("Theme directory not found!" + Environment.NewLine + ProgramConstants.RESOURCES_DIR);
 
-            Logger.Log("Initializing updater.");
+            Logger.Log("正在初始化更新程序.");
 
             SafePath.DeleteFileIfExists(ProgramConstants.GamePath, "version_u");
 
             Updater.Initialize(ProgramConstants.GamePath, ProgramConstants.GetBaseResourcePath(), ClientConfiguration.Instance.SettingsIniName, ClientConfiguration.Instance.LocalGame, SafePath.GetFile(ProgramConstants.StartupExecutable).Name);
 
-            Logger.Log("OSDescription: " + RuntimeInformation.OSDescription);
-            Logger.Log("OSArchitecture: " + RuntimeInformation.OSArchitecture);
-            Logger.Log("ProcessArchitecture: " + RuntimeInformation.ProcessArchitecture);
-            Logger.Log("FrameworkDescription: " + RuntimeInformation.FrameworkDescription);
-            Logger.Log("RuntimeIdentifier: " + RuntimeInformation.RuntimeIdentifier);
-            Logger.Log("Selected OS profile: " + MainClientConstants.OSId);
-            Logger.Log("Current culture: " + CultureInfo.CurrentCulture);
+            Logger.Log("操作系统描述: " + RuntimeInformation.OSDescription);
+            Logger.Log("操作系统架构: " + RuntimeInformation.OSArchitecture);
+            Logger.Log("进程架构: " + RuntimeInformation.ProcessArchitecture);
+            Logger.Log("框架描述: " + RuntimeInformation.FrameworkDescription);
+            Logger.Log("运行时标识符: " + RuntimeInformation.RuntimeIdentifier);
+            Logger.Log("选择的操作系统配置文件: " + MainClientConstants.OSId);
+            Logger.Log("当前文化: " + CultureInfo.CurrentCulture);
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -72,7 +72,7 @@ namespace DTAClient
 
             if (updaterFolder.Exists)
             {
-                Logger.Log("Attempting to delete temporary updater directory.");
+                Logger.Log("正在尝试删除临时更新程序目录.");
                 try
                 {
                     updaterFolder.Delete(true);
@@ -88,7 +88,7 @@ namespace DTAClient
 
                 if (!savedGamesFolder.Exists)
                 {
-                    Logger.Log("Saved Games directory does not exist - attempting to create one.");
+                    Logger.Log("保存游戏目录不存在 - 尝试创建一个.");
                     try
                     {
                         savedGamesFolder.Create();
@@ -101,7 +101,7 @@ namespace DTAClient
 
             if (Updater.CustomComponents != null)
             {
-                Logger.Log("Removing partial custom component downloads.");
+              Logger.Log("正在移除部分自定义组件下载.");
                 foreach (var component in Updater.CustomComponents)
                 {
                     try
@@ -164,8 +164,8 @@ namespace DTAClient
                         }
                         catch (Exception e)
                         {
-                            Logger.Log("PruneFiles: Could not delete file " + fsEntry.Name +
-                                ". Error message: " + e.Message);
+                            Logger.Log("PruneFiles: 无法删除文件 " + fsEntry.Name +
+                                ". 错误信息: " + e.Message);
                             continue;
                         }
                     }
@@ -176,8 +176,8 @@ namespace DTAClient
             }
             catch (Exception ex)
             {
-                Logger.Log("PruneFiles: An error occurred while pruning files from " +
-                   directory.Name + ". Message: " + ex.Message);
+                Logger.Log("PruneFiles: 在修剪文件时发生错误 " +
+                   directory.Name + ". 信息: " + ex.Message);
             }
         }
 #endif
@@ -231,9 +231,9 @@ namespace DTAClient
             }
             catch (Exception ex)
             {
-                Logger.Log("MigrateLogFiles: An error occured while moving log files from " +
+                Logger.Log("在移动日志文件时发生错误 " +
                     currentDirectory.Name + " to " +
-                    newDirectory.Name + ". Message: " + ex.Message);
+                    newDirectory.Name + ". 信息: " + ex.Message);
             }
         }
 
@@ -255,13 +255,13 @@ namespace DTAClient
 
                 foreach (var proc in searcher.Get())
                 {
-                    cpu = cpu + proc["Name"].ToString().Trim() + " (" + proc["NumberOfCores"] + " cores) ";
+                    cpu = "CPU: " + proc["Name"].ToString().Trim() + " (" + proc["NumberOfCores"] + " cores) ";
                 }
 
             }
             catch
             {
-                cpu = "CPU info not found";
+                cpu = "未找到CPU信息";
             }
 
             try
@@ -275,13 +275,13 @@ namespace DTAClient
                     if (currentBitsPerPixel != null && description != null)
                     {
                         if (currentBitsPerPixel.Value != null)
-                            videoController = videoController + "Video controller: " + description.Value.ToString().Trim() + " ";
+                            videoController = videoController + "显卡: " + description.Value.ToString().Trim() + " ";
                     }
                 }
             }
             catch
             {
-                cpu = "Video controller info not found";
+                cpu = "未找到显卡信息";
             }
 
             try
@@ -295,14 +295,14 @@ namespace DTAClient
                 }
 
                 if (total != 0)
-                    memory = "Total physical memory: " + (total >= 1073741824 ? total / 1073741824 + "GB" : total / 1048576 + "MB");
+                    memory = "内存: " + (total >= 1073741824 ? total / 1073741824 + "GB" : total / 1048576 + "MB");
             }
             catch
             {
-                cpu = "Memory info not found";
+                cpu = "未找到内存信息";
             }
 
-            Logger.Log(string.Format("Hardware info: {0} | {1} | {2}", cpu.Trim(), videoController.Trim(), memory));
+            Logger.Log(string.Format("硬件信息: {0} | {1} | {2}", cpu.Trim(), videoController.Trim(), memory));
         }
 
         /// <summary>
@@ -385,11 +385,11 @@ namespace DTAClient
         {
             if (!UserINISettings.Instance.WritePathToRegistry)
             {
-                Logger.Log("Skipping writing installation path to the Windows Registry because of INI setting.");
+                Logger.Log("由于 INI 设置，跳过将安装路径写入 Windows 注册表.");
                 return;
             }
 
-            Logger.Log("Writing installation path to the Windows registry.");
+            Logger.Log("正在将安装路径写入 Windows 注册表.");
 
             try
             {
@@ -398,7 +398,7 @@ namespace DTAClient
             }
             catch
             {
-                Logger.Log("Failed to write installation path to the Windows registry");
+                Logger.Log("写入安装路径到 Windows 注册表失败");
             }
         }
     }

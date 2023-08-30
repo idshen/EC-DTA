@@ -16,6 +16,7 @@ namespace ClientCore
         public const string AUDIO = "Audio";
         public const string COMPATIBILITY = "Compatibility";
         public const string GAME_FILTERS = "GameFilters";
+        public const string PHOBOS = "Phobos";
 
         private const bool DEFAULT_SHOW_FRIENDS_ONLY_GAMES = false;
         private const bool DEFAULT_HIDE_LOCKED_GAMES = false;
@@ -108,6 +109,7 @@ namespace ClientCore
             Difficulty = new IntSetting(iniFile, OPTIONS, "Difficulty", 1);
             ScrollDelay = new IntSetting(iniFile, OPTIONS, "ScrollDelay", 4);
             GameSpeed = new IntSetting(iniFile, OPTIONS, "GameSpeed", 1);
+            CampaignDefaultGameSpeed = new IntSetting(iniFile, PHOBOS, "CampaignDefaultGameSpeed", 5);
             PreloadMapPreviews = new BoolSetting(iniFile, VIDEO, "PreloadMapPreviews", false);
             ForceLowestDetailLevel = new BoolSetting(iniFile, VIDEO, "ForceLowestDetailLevel", false);
             MinimizeWindowsOnGameStart = new BoolSetting(iniFile, OPTIONS, "MinimizeWindowsOnGameStart", true);
@@ -236,6 +238,8 @@ namespace ClientCore
 
         public IntSetting GameSpeed { get; private set; }
 
+        public IntSetting CampaignDefaultGameSpeed { get; private set; }
+
         public IntSetting ScrollDelay { get; private set; }
 
         public BoolSetting PreloadMapPreviews { get; private set; }
@@ -315,7 +319,7 @@ namespace ClientCore
 
         public void SaveSettings()
         {
-            Logger.Log("Writing settings INI.");
+            Logger.Log("正在写入设置 INI。");
 
             ApplyDefaults();
             // CleanUpLegacySettings();

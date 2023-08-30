@@ -46,7 +46,7 @@ namespace DTAClient.Domain.Multiplayer
                 string[] splitValue = value.Split(':');
                 if (splitValue.Length != 2)
                 {
-                    Logger.Log($"Failed to parse game option preset value ({ProfileName}, {keyName})");
+                    Logger.Log($"解析游戏选项预设值失败 ({ProfileName}, {keyName})");
                     continue;
                 }
 

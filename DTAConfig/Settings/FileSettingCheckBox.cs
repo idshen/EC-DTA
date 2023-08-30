@@ -144,7 +144,7 @@ namespace DTAConfig.Settings
             else // selected state is unavailable, don't do anything
             {
                 Logger.Log($"{nameof(FileSettingCheckBox)}: " +
-                    $"The selected state ({Checked}) is unavailable in {Name}");
+                    $"选定的状态 ({Checked}) 在 {Name} 中不可用");
                 return false;
             }
 

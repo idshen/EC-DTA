@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using ClientCore;
 using ClientGUI;
 using DTAClient.Domain;
@@ -6,10 +10,7 @@ using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using Microsoft.Xna.Framework.Input;
 
 namespace DTAClient.DXGUI.Generic
 {
@@ -33,7 +34,7 @@ namespace DTAClient.DXGUI.Generic
         private XNAClientButton btnCancel;
 
         private List<SavedGame> savedGames = new List<SavedGame>();
-
+        public event EventHandler WindowClosed;
         public override void Initialize()
         {
             Name = "GameLoadingWindow";
@@ -58,6 +59,8 @@ namespace DTAClient.DXGUI.Generic
             btnLaunch.Text = "Load".L10N("Client:Main:ButtonLoad");
             btnLaunch.AllowClick = false;
             btnLaunch.LeftClick += BtnLaunch_LeftClick;
+            btnLaunch.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("13加载", btnLaunch);   // 从 INI 文件加载 btnCancel 的快捷键
 
             btnDelete = new XNAClientButton(WindowManager);
             btnDelete.Name = nameof(btnDelete);
@@ -65,12 +68,16 @@ namespace DTAClient.DXGUI.Generic
             btnDelete.Text = "Delete".L10N("Client:Main:ButtonDelete");
             btnDelete.AllowClick = false;
             btnDelete.LeftClick += BtnDelete_LeftClick;
+            btnDelete.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("14删除", btnDelete);   // 从 INI 文件加载 btnCancel 的快捷键
 
             btnCancel = new XNAClientButton(WindowManager);
             btnCancel.Name = nameof(btnCancel);
             btnCancel.ClientRectangle = new Rectangle(btnDelete.Right + 10, btnLaunch.Y, 110, 23);
             btnCancel.Text = "Cancel".L10N("Client:Main:ButtonCancel");
             btnCancel.LeftClick += BtnCancel_LeftClick;
+            btnCancel.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("15返回", btnCancel);   // 从 INI 文件加载 btnCancel 的快捷键
 
             AddChild(lbSaveGameList);
             AddChild(btnLaunch);
@@ -80,6 +87,78 @@ namespace DTAClient.DXGUI.Generic
             base.Initialize();
 
             ListSaves();
+        }
+
+        // 从 INI 文件加载快捷键
+        private static void LoadHotkeyForButton(string actionName, XNAClientButton button)
+        {
+            string iniFilePath = Path.Combine("Resources", "DIY", "快捷键.ini");
+            if (File.Exists(iniFilePath))
+            {
+                var lines = File.ReadAllLines(iniFilePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('=');
+                    if (parts.Length == 2)
+                    {
+                        string action = parts[0].Trim();
+                        string key = parts[1].Trim();
+
+                        if (action == actionName)
+                        {
+                            button.HotKey = ParseKey(key);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Logger.Log($"无法找到快捷键文件: {iniFilePath}");
+            }
+        }
+
+        private static Keys ParseKey(string keyString)
+        {
+            return keyString switch
+            {
+                "Enter" => Keys.Enter,
+                "Escape" => Keys.Escape,
+                "C" => Keys.C,
+                "L" => Keys.L,
+                "S" => Keys.S,
+                "M" => Keys.M,
+                "N" => Keys.N,
+                "O" => Keys.O,
+                "E" => Keys.E,
+                "T" => Keys.T,
+                "R" => Keys.R,
+                "X" => Keys.X,
+                "A" => Keys.A,
+                "D" => Keys.D,
+                "W" => Keys.W,
+                "Q" => Keys.Q,
+                "F" => Keys.F,
+                "Z" => Keys.Z,
+                "V" => Keys.V,
+                "B" => Keys.B,
+                "P" => Keys.P,
+                "I" => Keys.I,
+                "H" => Keys.H,
+                "Space" => Keys.Space,
+                "Tab" => Keys.Tab,
+                "Left" => Keys.Left,
+                "Right" => Keys.Right,
+                "Up" => Keys.Up,
+                "Down" => Keys.Down,
+                "Back" => Keys.Back,
+                "Delete" => Keys.Delete,
+                "Home" => Keys.Home,
+                "End" => Keys.End,
+                "PageUp" => Keys.PageUp,
+                "PageDown" => Keys.PageDown,
+                _ => Keys.None // 默认返回 None
+            };
         }
 
         private void ListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -104,7 +183,7 @@ namespace DTAClient.DXGUI.Generic
         private void BtnLaunch_LeftClick(object sender, EventArgs e)
         {
             SavedGame sg = savedGames[lbSaveGameList.SelectedIndex];
-            Logger.Log("Loading saved game " + sg.FileName);
+            Logger.Log("正在加载保存游戏 " + sg.FileName);
 
             FileInfo spawnerSettingsFile = SafePath.GetFile(ProgramConstants.GamePath, ProgramConstants.SPAWNER_SETTINGS);
 
@@ -160,8 +239,7 @@ namespace DTAClient.DXGUI.Generic
         private void DeleteMsgBox_YesClicked(XNAMessageBox obj)
         {
             SavedGame sg = savedGames[lbSaveGameList.SelectedIndex];
-
-            Logger.Log("Deleting saved game " + sg.FileName);
+            Logger.Log("正在删除保存游戏 " + sg.FileName);
             SafePath.DeleteFileIfExists(ProgramConstants.GamePath, SAVED_GAMES_DIRECTORY, sg.FileName);
             ListSaves();
         }
@@ -187,7 +265,7 @@ namespace DTAClient.DXGUI.Generic
 
             if (!savedGamesDirectoryInfo.Exists)
             {
-                Logger.Log("Saved Games directory not found!");
+                Logger.Log("保存游戏目录未找到！");
                 return;
             }
 

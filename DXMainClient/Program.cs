@@ -6,7 +6,8 @@ using System.Reflection;
 using System.Runtime.Loader;
 #endif
 using System.Threading;
-/* !! We cannot use references to other projects or non-framework assemblies in this class, assembly loading events not hooked up yet !! */
+
+/* !! 我们无法在这个类中使用对其他项目或非框架程序集的引用，因为程序集加载事件尚未连接 !! */
 
 namespace DTAClient
 {
@@ -15,10 +16,10 @@ namespace DTAClient
 #if !DEBUG
         static Program()
         {
-            /* We have different binaries depending on build platform, but for simplicity
-             * the target projects (DTA, TI, MO, YR) supply them all in a single download.
-             * To avoid DLL hell, we load the binaries from different directories
-             * depending on the build platform. */
+            /* 我们有不同的二进制文件，具体取决于构建平台，但为了简化起见，
+             * 目标项目（DTA，TI，MO，YR）将它们全部提供在单个下载中。
+             * 为了避免DLL地狱，我们从不同的目录加载二进制文件，
+             * 具体取决于构建平台。 */
 
             string startupPath = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.Parent.Parent.FullName + Path.DirectorySeparatorChar;
 
@@ -33,10 +34,10 @@ namespace DTAClient
 #elif DX
             SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "Windows") + Path.DirectorySeparatorChar;
 #else
-            Yuri has won
+            // 处理未定义的构建平台
 #endif
 
-            // Set up DLL load paths as early as possible
+            // 尽早设置DLL加载路径
             AssemblyLoadContext.Default.Resolving += DefaultAssemblyLoadContextOnResolving;
         }
 
@@ -45,7 +46,7 @@ namespace DTAClient
 
 #endif
         /// <summary>
-        /// The main entry point for the application.
+        /// 应用程序的主入口点。
         /// </summary>
 #if WINFORMS
         [STAThread]
@@ -53,7 +54,7 @@ namespace DTAClient
         static void Main(string[] args)
         {
             bool noAudio = false;
-            bool multipleInstanceMode = false;
+            bool multipleInstanceMode = true;
             List<string> unknownStartupParams = new List<string>();
 
             for (int arg = 0; arg < args.Length; arg++)
@@ -78,15 +79,16 @@ namespace DTAClient
 
             if (multipleInstanceMode)
             {
-                // Proceed to client startup
+                // 继续客户端启动
                 PreStartup.Initialize(parameters);
                 return;
             }
 
-            // We're a single instance application!
+            // 我们是单实例应用程序！
             // http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c/229567
-            // Global prefix means that the mutex is global to the machine
+            // 全局前缀表示该互斥体对整个机器全局可见
             string mutexId = FormattableString.Invariant($"Global{Guid.Parse("1CC9F8E7-9F69-4BBC-B045-E734204027A9")}");
+
             using var mutex = new Mutex(false, mutexId, out _);
             bool hasHandle = false;
 
@@ -96,7 +98,7 @@ namespace DTAClient
                 {
                     hasHandle = mutex.WaitOne(8000, false);
                     if (hasHandle == false)
-                        throw new TimeoutException("Timeout waiting for exclusive access");
+                        throw new TimeoutException("等待独占访问超时");
                 }
                 catch (AbandonedMutexException)
                 {
@@ -107,7 +109,7 @@ namespace DTAClient
                     return;
                 }
 
-                // Proceed to client startup
+                // 继续客户端启动
                 PreStartup.Initialize(parameters);
             }
             finally

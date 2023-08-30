@@ -127,7 +127,7 @@ namespace ClientGUI
             btnYes.Name = "btnYes";
             btnYes.Text = "Yes".L10N("Client:ClientGUI:ButtonYes");
             btnYes.LeftClick += BtnYes_LeftClick;
-            btnYes.HotKey = Keys.Y;
+            btnYes.HotKey = Keys.Enter;
 
             AddChild(btnYes);
 
@@ -143,7 +143,7 @@ namespace ClientGUI
             btnNo.Name = "btnNo";
             btnNo.Text = "No".L10N("Client:ClientGUI:ButtonNo");
             btnNo.LeftClick += BtnNo_LeftClick;
-            btnNo.HotKey = Keys.N;
+            btnNo.HotKey = Keys.Escape;
 
             AddChild(btnNo);
 
@@ -178,7 +178,7 @@ namespace ClientGUI
             btnCancel.Name = "btnCancel";
             btnCancel.Text = "Cancel".L10N("Client:ClientGUI:ButtonCancel");
             btnCancel.LeftClick += BtnCancel_LeftClick;
-            btnCancel.HotKey = Keys.C;
+            btnCancel.HotKey = Keys.Escape;
 
             AddChild(btnCancel);
 
@@ -210,7 +210,7 @@ namespace ClientGUI
             CancelClickedAction?.Invoke(this);
         }
 
-        private void Hide()
+        public void Hide()
         {
             if (this.Parent != null)
                 WindowManager.RemoveControl(this.Parent);
@@ -221,6 +221,12 @@ namespace ClientGUI
         public void Show()
         {
             DarkeningPanel.AddAndInitializeWithControl(WindowManager, this);
+            // 获取窗口的中心点
+            var centerX = WindowManager.GraphicsDevice.Viewport.Width / 2;
+            var centerY = WindowManager.GraphicsDevice.Viewport.Height / 2;
+
+            // 设置鼠标位置为窗口中心
+            Mouse.SetPosition(centerX, centerY);
         }
 
         #region Static Show methods

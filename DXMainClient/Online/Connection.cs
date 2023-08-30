@@ -177,15 +177,15 @@ namespace DTAClient.Online
                         var result = client.BeginConnect(server.Host, server.Ports[i], null, null);
                         result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(3), false);
 
-                        Logger.Log("Attempting connection to " + server.Host + ":" + server.Ports[i]);
+                        Logger.Log("尝试连接到 " + server.Host + ":" + server.Ports[i]);
 
                         if (!client.Connected)
                         {
-                            Logger.Log("Connecting to " + server.Host + " port " + server.Ports[i] + " timed out!");
+                            Logger.Log("连接到 " + server.Host + " 端口 " + server.Ports[i] + " 超时！");
                             continue; // Start all over again, using the next port
                         }
 
-                        Logger.Log("Succesfully connected to " + server.Host + " on port " + server.Ports[i]);
+                        Logger.Log("成功连接到 " + server.Host + " 端口 " + server.Ports[i]);
                         client.EndConnect(result);
 
                         _isConnected = true;
@@ -207,11 +207,11 @@ namespace DTAClient.Online
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Unable to connect to the server. " + ex.Message);
+                    Logger.Log("无法连接到服务器. " + ex.Message);
                 }
             }
 
-            Logger.Log("Connecting to CnCNet failed!");
+            Logger.Log("连接到 CnCNet 失败！");
             // Clear the failed server list in case connecting to all servers has failed
             failedServerIPs.Clear();
             _attemptingConnection = false;
@@ -252,7 +252,7 @@ namespace DTAClient.Online
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Disconnected from CnCNet due to a socket error. Message: " + ex.Message);
+                    Logger.Log("因套接字错误而与 CnCNet 断开连接.消息: " + ex.Message);
                     errorTimes++;
 
                     if (errorTimes > MAX_RECONNECT_COUNT)
@@ -271,7 +271,7 @@ namespace DTAClient.Online
 
                 // A message has been succesfully received
                 string msg = encoding.GetString(message, 0, bytesRead);
-                Logger.Log("Message received: " + msg);
+                Logger.Log("接收到消息: " + msg);
 
                 HandleMessage(msg);
                 timer.Change(30000, 30000);
@@ -292,7 +292,7 @@ namespace DTAClient.Online
 
                 if (reconnectCount > MAX_RECONNECT_COUNT)
                 {
-                    Logger.Log("Reconnect attempt count exceeded!");
+                    Logger.Log("重连尝试次数超出！");
                     return;
                 }
 
@@ -300,11 +300,11 @@ namespace DTAClient.Online
 
                 if (IsConnected || AttemptingConnection)
                 {
-                    Logger.Log("Cancelling reconnection attempt because the user has attempted to reconnect manually.");
+                    Logger.Log("因用户手动尝试重新连接而取消重连尝试.");
                     return;
                 }
 
-                Logger.Log("Attempting to reconnect to CnCNet.");
+                Logger.Log("尝试重新连接到 CnCNet.");
                 connectionManager.OnReconnectAttempt();
             }
         }
@@ -329,7 +329,7 @@ namespace DTAClient.Online
 
                 Task<IEnumerable<Tuple<IPAddress, string, int[]>>> dnsTask = new Task<IEnumerable<Tuple<IPAddress, string, int[]>>>(() =>
                 {
-                    Logger.Log($"Attempting to DNS resolve {serverName} ({serverHostnameOrIPAddress}).");
+                    Logger.Log($"尝试解析 DNS {serverName} ({serverHostnameOrIPAddress}).");
                     ICollection<Tuple<IPAddress, string, int[]>> _serverInfos = new List<Tuple<IPAddress, string, int[]>>();
 
                     try
@@ -338,8 +338,8 @@ namespace DTAClient.Online
                         IEnumerable<IPAddress> serverIPAddresses = Dns.GetHostAddresses(serverHostnameOrIPAddress)
                                                                       .Where(IPAddress => IPAddress.AddressFamily == AddressFamily.InterNetwork);
 
-                        Logger.Log($"DNS resolved {serverName} ({serverHostnameOrIPAddress}): " +
-                            $"{string.Join(", ", serverIPAddresses.Select(item => item.ToString()))}");
+                        Logger.Log($"DNS 解析 {serverName} ({serverHostnameOrIPAddress}): " +
+                             $"{string.Join(", ", serverIPAddresses.Select(item => item.ToString()))}");
 
                         // Store each IPAddress in a different tuple.
                         foreach (IPAddress serverIPAddress in serverIPAddresses)
@@ -349,7 +349,7 @@ namespace DTAClient.Online
                     }
                     catch (SocketException ex)
                     {
-                        Logger.Log($"Caught an exception when DNS resolving {serverName} ({serverHostnameOrIPAddress}) Lobby server: {ex.Message}");
+                        Logger.Log($"在解析 DNS {serverName} ({serverHostnameOrIPAddress}) 时捕获异常: {ex.Message}");
                     }
 
                     return _serverInfos;
@@ -393,10 +393,10 @@ namespace DTAClient.Online
                 string serverNames = string.Join(", ", serverInfo.Item2.ToString());
                 string serverPorts = string.Join(", ", serverInfo.Item3.Select(port => port.ToString()));
 
-                Logger.Log($"Got a Lobby server. IP: {serverIPAddress}; Name: {serverNames}; Ports: {serverPorts}.");
+                Logger.Log($"获得一个 Lobby 服务器.IP: {serverIPAddress}; 名称: {serverNames}; 端口: {serverPorts}.");
             }
 
-            Logger.Log($"The number of Lobby servers is {serverInfos.Count()}.");
+            Logger.Log($"Lobby 服务器的数量是 {serverInfos.Count()}.");
 
             // Test the latency.
             ICollection<Task<Tuple<Server, long>>> pingTasks = new List<Task<Tuple<Server, long>>>(serverInfos.Count());
@@ -409,13 +409,13 @@ namespace DTAClient.Online
 
                 if (failedServerIPs.Contains(serverIPAddress.ToString()))
                 {
-                    Logger.Log($"Skipped a failed server {serverNames} ({serverIPAddress}).");
+                    Logger.Log($"跳过失败的服务器 {serverNames} ({serverIPAddress}).");
                     continue;
                 }
 
                 Task<Tuple<Server, long>> pingTask = new Task<Tuple<Server, long>>(() =>
                 {
-                    Logger.Log($"Attempting to ping {serverNames} ({serverIPAddress}).");
+                    Logger.Log($"尝试 ping {serverNames} ({serverIPAddress}).");
                     Server server = new Server(serverIPAddress.ToString(), serverNames, serverPorts);
 
                     using (Ping ping = new Ping())
@@ -427,13 +427,13 @@ namespace DTAClient.Online
                             if (pingReply.Status == IPStatus.Success)
                             {
                                 long pingInMs = pingReply.RoundtripTime;
-                                Logger.Log($"The latency in milliseconds to the server {serverNames} ({serverIPAddress}): {pingInMs}.");
+                                Logger.Log($"到服务器 {serverNames} ({serverIPAddress}) 的延迟（毫秒）: {pingInMs}.");
 
                                 return new Tuple<Server, long>(server, pingInMs);
                             }
                             else
                             {
-                                Logger.Log($"Failed to ping the server {serverNames} ({serverIPAddress}): " +
+                                Logger.Log($"无法 ping 服务器 {serverNames} ({serverIPAddress})： " +
                                     $"{Enum.GetName(typeof(IPStatus), pingReply.Status)}.");
 
                                 return new Tuple<Server, long>(server, long.MaxValue);
@@ -441,7 +441,7 @@ namespace DTAClient.Online
                         }
                         catch (PingException ex)
                         {
-                            Logger.Log($"Caught an exception when pinging {serverNames} ({serverIPAddress}) Lobby server: {ex.Message}");
+                            Logger.Log($"在 ping 服务器 {serverNames} ({serverIPAddress}) 时捕获异常: {ex.Message}");
 
                             return new Tuple<Server, long>(server, long.MaxValue);
                         }
@@ -466,7 +466,7 @@ namespace DTAClient.Online
                 long serverLatencyValue = serverAndLatencyResult.Item2;
                 string serverLatencyString = serverLatencyValue <= MAXIMUM_LATENCY ? serverLatencyValue.ToString() : "DNF";
 
-                Logger.Log($"Lobby server IP: {serverIPAddress}, latency: {serverLatencyString}.");
+                Logger.Log($"Lobby 服务器 IP: {serverIPAddress}, 延迟: {serverLatencyString}.");
             }
 
             {
@@ -474,7 +474,7 @@ namespace DTAClient.Online
                 int closerCount = sortedServerAndLatencyResults.Count(
                     serverAndLatencyResult => serverAndLatencyResult.Item2 <= MAXIMUM_LATENCY);
 
-                Logger.Log($"Lobby servers: {candidateCount} available, {closerCount} fast.");
+                Logger.Log($"Lobby 服务器: {candidateCount} 可用, {closerCount} 快速.");
                 connectionManager.OnServerLatencyTested(candidateCount, closerCount);
             }
 
@@ -760,7 +760,7 @@ namespace DTAClient.Online
                         {
                             string oldNick = prefix.Substring(0, nickExclamIndex);
                             string newNick = parameters[0];
-                            Logger.Log("Nick change - " + oldNick + " -> " + newNick);
+                            Logger.Log("昵称更改 - " + oldNick + " -> " + newNick);
                             connectionManager.OnUserNicknameChange(oldNick, newNick);
                         }
                         break;
@@ -768,7 +768,7 @@ namespace DTAClient.Online
             }
             catch
             {
-                Logger.Log("Warning: Failed to parse command " + message);
+                Logger.Log("警告: 解析命令 " + message + " 失败.");
             }
         }
 
@@ -822,7 +822,7 @@ namespace DTAClient.Online
             if (commandAndParameters.Length == 0)
             {
                 command = String.Empty;
-                Logger.Log("Nonexistant command!");
+                Logger.Log("不存在的命令！");
                 return;
             }
 
@@ -866,7 +866,7 @@ namespace DTAClient.Online
                             {
                                 message = qm.Command;
 
-                                Logger.Log("Delayed message sent: " + qm.ID);
+                                Logger.Log("延迟消息已发送: " + qm.ID);
 
                                 MessageQueue.RemoveAt(i);
                                 break;
@@ -917,7 +917,7 @@ namespace DTAClient.Online
             if (welcomeMessageReceived)
                 return;
 
-            Logger.Log("Registering.");
+            Logger.Log("正在注册.");
 
             var defaultGame = ClientConfiguration.Instance.LocalGame;
 
@@ -944,7 +944,7 @@ namespace DTAClient.Online
         {
             QueuedMessage qm = new QueuedMessage(message, type, priority, delay);
             QueueMessage(qm);
-            Logger.Log("Setting delay to " + delay + "ms for " + qm.ID);
+            Logger.Log("为 " + qm.ID + " 设置延迟 " + delay + "ms.");
         }
 
         /// <summary>
@@ -968,7 +968,7 @@ namespace DTAClient.Online
                 }
                 catch (IOException ex)
                 {
-                    Logger.Log("Sending message to the server failed! Reason: " + ex.Message);
+                    Logger.Log("向服务器发送消息失败！原因: " + ex.Message);
                 }
             }
         }
@@ -1030,7 +1030,7 @@ namespace DTAClient.Online
                     default:
                         int placeInQueue = MessageQueue.FindIndex(m => m.Priority < qm.Priority);
                         if (ProgramConstants.LOG_LEVEL > 1)
-                            Logger.Log("QM Undefined: " + qm.Command + " " + placeInQueue);
+                            Logger.Log("QM 未定义: " + qm.Command + " " + placeInQueue);
                         if (placeInQueue == -1)
                             MessageQueue.Add(qm);
                         else
@@ -1054,7 +1054,7 @@ namespace DTAClient.Online
             if (broadcastingMessageIndex > -1)
             {
                 if (ProgramConstants.LOG_LEVEL > 1)
-                    Logger.Log("QM Replace: " + qm.Command + " " + broadcastingMessageIndex);
+                    Logger.Log("QM 替换: " + qm.Command + " " + broadcastingMessageIndex);
                 MessageQueue[broadcastingMessageIndex] = qm;
             }
             else

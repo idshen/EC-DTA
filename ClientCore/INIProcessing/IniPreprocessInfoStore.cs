@@ -55,7 +55,7 @@ namespace ClientCore.INIProcessing
 
                 if (values.Length != 3)
                 {
-                    Logger.Log("Failed to parse preprocessed INI info, key " + key);
+                    Logger.Log("解析预处理的 INI 信息失败，键 " + key);
                     continue;
                 }
 

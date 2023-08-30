@@ -9,6 +9,8 @@ using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
 using ClientUpdater;
+using Microsoft.Xna.Framework.Input;
+using System.IO;
 
 namespace DTAConfig
 {
@@ -34,7 +36,7 @@ namespace DTAConfig
         public override void Initialize()
         {
             Name = "OptionsWindow";
-            ClientRectangle = new Rectangle(0, 0, 576, 475);
+            ClientRectangle = new Rectangle(0, 0, 620, 500);
             BackgroundTexture = AssetLoader.LoadTextureUncached("optionsbg.png");
 
             tabControl = new XNAClientTabControl(WindowManager);
@@ -56,12 +58,16 @@ namespace DTAConfig
                 Height - 35, UIDesignConstants.BUTTON_WIDTH_92, UIDesignConstants.BUTTON_HEIGHT);
             btnCancel.Text = "Cancel".L10N("Client:DTAConfig:ButtonCancel");
             btnCancel.LeftClick += BtnBack_LeftClick;
+            btnCancel.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("22取消", btnCancel);   // 从 INI 文件加载 btnCancel 的快捷键
 
             var btnSave = new XNAClientButton(WindowManager);
             btnSave.Name = "btnSave";
             btnSave.ClientRectangle = new Rectangle(12, btnCancel.Y, UIDesignConstants.BUTTON_WIDTH_92, UIDesignConstants.BUTTON_HEIGHT);
             btnSave.Text = "Save".L10N("Client:DTAConfig:ButtonSave");
             btnSave.LeftClick += BtnSave_LeftClick;
+            btnSave.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("21保存", btnSave);   // 从 INI 文件加载 btnSave 的快捷键
 
             displayOptionsPanel = new DisplayOptionsPanel(WindowManager, UserINISettings.Instance);
             componentsPanel = new ComponentsPanel(WindowManager, UserINISettings.Instance);
@@ -102,6 +108,78 @@ namespace DTAConfig
             base.Initialize();
 
             CenterOnParent();
+        }
+
+        // 新增方法从 INI 文件加载快捷键
+        private void LoadHotkeyForButton(string actionName, XNAClientButton button)
+        {
+            string iniFilePath = Path.Combine("Resources", "DIY", "快捷键.ini");
+            if (File.Exists(iniFilePath))
+            {
+                var lines = File.ReadAllLines(iniFilePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('=');
+                    if (parts.Length == 2)
+                    {
+                        string action = parts[0].Trim();
+                        string key = parts[1].Trim();
+
+                        if (action == actionName)
+                        {
+                            button.HotKey = ParseKey(key);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Logger.Log($"无法找到快捷键文件: {iniFilePath}");
+            }
+        }
+
+        private Keys ParseKey(string keyString)
+        {
+            return keyString switch
+            {
+                "Enter" => Keys.Enter,
+                "Escape" => Keys.Escape,
+                "C" => Keys.C,
+                "L" => Keys.L,
+                "S" => Keys.S,
+                "M" => Keys.M,
+                "N" => Keys.N,
+                "O" => Keys.O,
+                "E" => Keys.E,
+                "T" => Keys.T,
+                "R" => Keys.R,
+                "X" => Keys.X,
+                "A" => Keys.A,
+                "D" => Keys.D,
+                "W" => Keys.W,
+                "Q" => Keys.Q,
+                "F" => Keys.F,
+                "Z" => Keys.Z,
+                "V" => Keys.V,
+                "B" => Keys.B,
+                "P" => Keys.P,
+                "I" => Keys.I,
+                "H" => Keys.H,
+                "Space" => Keys.Space,
+                "Tab" => Keys.Tab,
+                "Left" => Keys.Left,
+                "Right" => Keys.Right,
+                "Up" => Keys.Up,
+                "Down" => Keys.Down,
+                "Back" => Keys.Back,
+                "Delete" => Keys.Delete,
+                "Home" => Keys.Home,
+                "End" => Keys.End,
+                "PageUp" => Keys.PageUp,
+                "PageDown" => Keys.PageDown,
+                _ => Keys.None // 默认返回 None
+            };
         }
 
         public void SetTopBar(XNAControl topBar) => this.topBar = topBar;
@@ -191,7 +269,7 @@ namespace DTAConfig
             }
             catch (Exception ex)
             {
-                Logger.Log("Saving settings failed! Error message: " + ex.Message);
+                Logger.Log("保存设置失败！错误消息: " + ex.Message);
                 XNAMessageBox.Show(WindowManager, "Saving Settings Failed".L10N("Client:DTAConfig:SaveSettingFailTitle"),
                     "Saving settings failed! Error message:".L10N("Client:DTAConfig:SaveSettingFailText") + " " + ex.Message);
             }
@@ -224,6 +302,7 @@ namespace DTAConfig
             foreach (var panel in optionsPanels)
                 optionValuesChanged = panel.RefreshPanel() || optionValuesChanged;
 
+            return optionValuesChanged;
             if (optionValuesChanged)
             {
                 XNAMessageBox.Show(WindowManager, "Setting Value(s) Changed".L10N("Client:DTAConfig:SettingChangedTitle"),

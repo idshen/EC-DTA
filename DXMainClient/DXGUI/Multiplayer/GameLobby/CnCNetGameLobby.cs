@@ -414,7 +414,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         private void Channel_UserNameChanged(object sender, UserNameChangedEventArgs e)
         {
-            Logger.Log("CnCNetGameLobby: Nickname change: " + e.OldUserName + " to " + e.User.Name);
+            Logger.Log("CnCNetGameLobby: 昵称更改: " + e.OldUserName + " 到 " + e.User.Name);
             int index = Players.FindIndex(p => p.Name == e.OldUserName);
             if (index > -1)
             {
@@ -606,7 +606,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
             }
 
-            Logger.Log("Unhandled CTCP command: " + e.Message + " from " + e.UserName);
+            Logger.Log("未处理的 CTCP 命令: " + e.Message + " 来自 " + e.UserName);
         }
 
         private void Channel_MessageAdded(object sender, IRCMessageEventArgs e)
@@ -660,7 +660,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
             else
             {
-                Logger.Log("One player MP -- starting!");
+                Logger.Log("一名玩家 MP -- 正在启动！");
             }
 
             Players.ForEach(pInfo => pInfo.IsInGame = true);
@@ -1203,7 +1203,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         private void MapSharingConfirmationPanel_MapDownloadConfirmed(object sender, EventArgs e)
         {
-            Logger.Log("Map sharing confirmed.");
+            Logger.Log("地图分享已确认.");
             AddNotice("Attempting to download map.".L10N("Client:Main:DownloadingMap"));
             mapSharingConfirmationPanel.SetDownloadingStatus();
             MapSharer.DownloadMap(lastMapSHA1, localGame, lastMapName);
@@ -1298,7 +1298,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (gameFilesHash != fhc.GetCompleteHash())
             {
-                Logger.Log("Game files modified during client session!");
+                Logger.Log("客户端会话期间游戏文件已修改！");
                 channel.SendCTCPMessage(CHEAT_DETECTED_MESSAGE, QueuedMessageType.INSTANT_MESSAGE, 0);
                 HandleCheatDetectedMessage(ProgramConstants.PLAYERNAME);
             }
@@ -1630,7 +1630,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private void MapSharer_HandleMapDownloadComplete(SHA1EventArgs e)
         {
             string mapFileName = MapSharer.GetMapFileName(e.SHA1, e.MapName);
-            Logger.Log("Map " + mapFileName + " downloaded, parsing.");
+            Logger.Log("地图 " + mapFileName + " 下载，正在解析.");
             string mapPath = "Maps/Custom/" + mapFileName;
             Map map = MapLoader.LoadCustomMap(mapPath, out string returnMessage);
             if (map != null)
@@ -1699,7 +1699,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             if (hostUploadedMaps.Contains(mapSHA1))
             {
-                Logger.Log("HandleMapUploadRequest: Map " + mapSHA1 + " is already uploaded!");
+                Logger.Log("HandleMapUploadRequest: 地图 " + mapSHA1 + " 已经上传！");
                 return;
             }
 
@@ -1715,13 +1715,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (map == null)
             {
-                Logger.Log("Unknown map upload request from " + sender + ": " + mapSHA1);
+                Logger.Log("来自 " + sender + " 的未知地图上传请求: " + mapSHA1);
                 return;
             }
 
             if (map.Official)
             {
-                Logger.Log("HandleMapUploadRequest: Map is official, so skip request");
+                Logger.Log("HandleMapUploadRequest: 地图是官方的，因此跳过请求");
 
                 AddNotice(string.Format(("{0} doesn't have the map '{1}' on their local installation. " +
                     "The map needs to be changed or {0} is unable to participate in the match.").L10N("Client:Main:PlayerMissingMap"),
@@ -1783,7 +1783,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (lastMapSHA1 == sha1 && Map == null)
             {
-                Logger.Log("The game host has uploaded the map into the database. Re-attempting download...");
+                Logger.Log("游戏主机已将地图上传到数据库。正在重新尝试下载...");
                 MapSharer.DownloadMap(sha1, localGame, lastMapName);
             }
         }

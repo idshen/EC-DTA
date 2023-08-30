@@ -89,24 +89,24 @@ namespace DTAClient.Online
                 INIHashes = string.Empty
             };
 
-            Logger.Log("Hash for " + ProgramConstants.BASE_RESOURCE_PATH + CONFIGNAME + ": " + fh.FHCConfigHash);
-            Logger.Log("Hash for " + ProgramConstants.BASE_RESOURCE_PATH + "\\GameOptions.ini: " + fh.GameOptionsHash);
-            Logger.Log("Hash for " + ProgramConstants.BASE_RESOURCE_PATH + "\\Binaries\\Windows\\clientdx.dll: " + fh.ClientDXHash);
-            Logger.Log("Hash for " + ProgramConstants.BASE_RESOURCE_PATH + "\\Binaries\\XNA\\clientxna.dll: " + fh.ClientXNAHash);
-            Logger.Log("Hash for " + ProgramConstants.BASE_RESOURCE_PATH + "\\Binaries\\OpenGL\\clientogl.dll: " + fh.ClientOGLHash);
-            Logger.Log("Hash for " + ProgramConstants.BASE_RESOURCE_PATH + "\\Binaries\\UniversalGL\\clientogl.dll: " + fh.ClientUGLHash);
-            Logger.Log("Hash for " + ClientConfiguration.Instance.MPMapsIniPath + ": " + fh.MPMapsHash);
+            Logger.Log("哈希值 " + ProgramConstants.BASE_RESOURCE_PATH + CONFIGNAME + ": " + fh.FHCConfigHash);
+            Logger.Log("哈希值 " + ProgramConstants.BASE_RESOURCE_PATH + "\\GameOptions.ini: " + fh.GameOptionsHash);
+            Logger.Log("哈希值 " + ProgramConstants.BASE_RESOURCE_PATH + "\\Binaries\\Windows\\clientdx.dll: " + fh.ClientDXHash);
+            Logger.Log("哈希值 " + ProgramConstants.BASE_RESOURCE_PATH + "\\Binaries\\XNA\\clientxna.dll: " + fh.ClientXNAHash);
+            Logger.Log("哈希值 " + ProgramConstants.BASE_RESOURCE_PATH + "\\Binaries\\OpenGL\\clientogl.dll: " + fh.ClientOGLHash);
+            Logger.Log("哈希值 " + ProgramConstants.BASE_RESOURCE_PATH + "\\Binaries\\UniversalGL\\clientogl.dll: " + fh.ClientUGLHash);
+            Logger.Log("哈希值 " + ClientConfiguration.Instance.MPMapsIniPath + ": " + fh.MPMapsHash);
 
             if (calculateGameExeHash)
-                Logger.Log("Hash for " + ClientConfiguration.Instance.GetGameExecutableName() + ": " + fh.GameExeHash);
+                Logger.Log("哈希值 " + ClientConfiguration.Instance.GetGameExecutableName() + ": " + fh.GameExeHash);
 
             if (!string.IsNullOrEmpty(ClientConfiguration.Instance.GameLauncherExecutableName))
-                Logger.Log("Hash for " + ClientConfiguration.Instance.GameLauncherExecutableName + ": " + fh.LauncherExeHash);
+                Logger.Log("哈希值 " + ClientConfiguration.Instance.GameLauncherExecutableName + ": " + fh.LauncherExeHash);
 
             foreach (string filePath in fileNamesToCheck)
             {
                 fh.INIHashes = AddToStringIfFileExists(fh.INIHashes, filePath);
-                Logger.Log("Hash for " + filePath + ": " +
+                Logger.Log("哈希值 " + filePath + ": " +
                     Utilities.CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GamePath, filePath)));
             }
 
@@ -130,7 +130,7 @@ namespace DTAClient.Online
                     {
                         string sha1 = Utilities.CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GamePath, filename));
                         fh.INIHashes += sha1;
-                        Logger.Log("Hash for " + filename + ": " + sha1);
+                        Logger.Log("哈希值 " + filename + ": " + sha1);
                     }
                 }
             }
@@ -153,7 +153,7 @@ namespace DTAClient.Online
                         {
                             string sha1 = Utilities.CalculateSHA1ForFile(filePath);
                             fh.INIHashes += sha1;
-                            Logger.Log("Hash for " + Path.GetRelativePath(ProgramConstants.GamePath, filePath) + ": " + sha1);
+                            Logger.Log("哈希值 " + Path.GetRelativePath(ProgramConstants.GamePath, filePath) + ": " + sha1);
                         }
                     }
                 }
@@ -183,7 +183,7 @@ namespace DTAClient.Online
             str += fh.MPMapsHash;
             str += fh.FHCConfigHash;
 
-            Logger.Log("Complete hash: " + Utilities.CalculateSHA1ForString(str));
+            Logger.Log("完整哈希值: " + Utilities.CalculateSHA1ForString(str));
 
             return Utilities.CalculateSHA1ForString(str);
         }

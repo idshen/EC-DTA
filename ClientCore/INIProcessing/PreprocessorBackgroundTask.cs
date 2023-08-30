@@ -38,13 +38,13 @@ namespace ClientCore.INIProcessing
 
         private static void CheckFiles()
         {
-            Logger.Log("Starting background processing of INI files.");
+            Logger.Log("开始后台处理 INI 文件。");
 
             DirectoryInfo iniFolder = SafePath.GetDirectory(ProgramConstants.GamePath, "INI", "Base");
 
             if (!iniFolder.Exists)
             {
-                Logger.Log("/INI/Base does not exist, skipping background processing of INI files.");
+                Logger.Log("/INI/Base 不存在，跳过后台处理 INI 文件。");
                 return;
             }
 
@@ -61,7 +61,7 @@ namespace ClientCore.INIProcessing
             {
                 if (!infoStore.IsIniUpToDate(iniFile.Name))
                 {
-                    Logger.Log("INI file " + iniFile.Name + " is not processed or outdated, re-processing it.");
+                    Logger.Log("INI 文件 " + iniFile.Name + " 未处理或过时，重新处理它。");
 
                     string sourcePath = iniFile.FullName;
                     string destinationPath = SafePath.CombineFilePath(ProgramConstants.GamePath, "INI", iniFile.Name);
@@ -75,17 +75,17 @@ namespace ClientCore.INIProcessing
                 }
                 else
                 {
-                    Logger.Log("INI file " + iniFile.Name + " is up to date.");
+                    Logger.Log("INI 文件 " + iniFile.Name + " 已是最新。");
                 }
             }
 
             if (processedCount > 0)
             {
-                Logger.Log("Writing preprocessed INI info store.");
+                Logger.Log("正在写入预处理的 INI 信息存储。");
                 infoStore.Write();
             }
 
-            Logger.Log("Ended background processing of INI files.");
+            Logger.Log("结束后台处理 INI 文件。");
         }
     }
 }

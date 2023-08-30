@@ -1,14 +1,15 @@
-﻿using ClientCore;
-using Rampastring.Tools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Rampastring.XNAUI;
+using ClientCore;
+using Rampastring.Tools;
 
 namespace ClientGUI
 {
     /// <summary>
     /// A sub-window to be displayed inside the game window.
     /// Supports easy reading of child controls' attributes from an INI file.
+    /// 新增部分,IME实现系统输入法的调用
     /// </summary>
     public class XNAWindow : XNAWindowBase
     {
@@ -16,9 +17,37 @@ namespace ClientGUI
         private const string GENERIC_WINDOW_SECTION = "GenericWindow";
         private const string EXTRA_CONTROLS = "ExtraControls";
 
+#if WINFORMS
+        private IMENativeWindow _nativeWnd;
+#endif
+
         public XNAWindow(WindowManager windowManager) : base(windowManager)
         {
+#if WINFORMS
+            _nativeWnd = new IMENativeWindow(windowManager.GetWindowHandle());
+            _nativeWnd.CandidatesReceived += (s, e) => { if (CandidatesReceived != null) CandidatesReceived(s, e); };
+            _nativeWnd.CompositionReceived += (s, e) => { if (CompositionReceived != null) CompositionReceived(s, e); };
+            _nativeWnd.ResultReceived += (s, e) => { if (ResultReceived != null) ResultReceived(s, e); };
+            _nativeWnd.EnableIME();
+#endif
         }
+
+        /// <summary>
+        /// Called when the candidates updated
+        /// </summary>
+        public event EventHandler CandidatesReceived;
+
+        /// <summary>
+        /// Called when the composition updated
+        /// </summary>
+        public event EventHandler CompositionReceived;
+
+        /// <summary>
+        /// Called when a new result character is coming
+        /// </summary>
+        public event EventHandler<IMEResultEventArgs> ResultReceived;
+
+        private int secretCodeIndex = 0;
 
         /// <summary>
         /// The INI file that was used for theming this window.

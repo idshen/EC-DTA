@@ -25,6 +25,7 @@ using System.Threading;
 using SixLabors.ImageSharp;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
+using Microsoft.Xna.Framework.Input;
 
 namespace DTAClient.DXGUI.Multiplayer
 {
@@ -113,6 +114,8 @@ namespace DTAClient.DXGUI.Multiplayer
             btnNewGame.ClientRectangle = new Rectangle(12, Height - 35, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
             btnNewGame.Text = "Create Game".L10N("Client:Main:CreateGame");
             btnNewGame.LeftClick += BtnNewGame_LeftClick;
+            btnNewGame.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("18创建房间", btnNewGame);   // 从 INI 文件加载 btnCancel 的快捷键
 
             btnJoinGame = new XNAClientButton(WindowManager);
             btnJoinGame.Name = "btnJoinGame";
@@ -120,13 +123,17 @@ namespace DTAClient.DXGUI.Multiplayer
                 btnNewGame.Y, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
             btnJoinGame.Text = "Join Game".L10N("Client:Main:JoinGame");
             btnJoinGame.LeftClick += BtnJoinGame_LeftClick;
+            btnJoinGame.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("19加入房间", btnJoinGame);   // 从 INI 文件加载 btnCancel 的快捷键
 
             btnMainMenu = new XNAClientButton(WindowManager);
             btnMainMenu.Name = "btnMainMenu";
             btnMainMenu.ClientRectangle = new Rectangle(Width - 145,
                 btnNewGame.Y, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
-            btnMainMenu.Text = "Main Menu".L10N("Client:Main:MainMenu");
+            btnMainMenu.Text = "Log Out".L10N("Client:Main:LogOut");
             btnMainMenu.LeftClick += BtnMainMenu_LeftClick;
+            btnMainMenu.HotKey = Keys.None;               // 默认快捷键设置为 None
+            LoadHotkeyForButton("20退出大厅", btnMainMenu);   // 从 INI 文件加载 btnCancel 的快捷键
 
             lbGameList = new GameListBox(WindowManager, mapLoader, localGame);
             lbGameList.Name = "lbGameList";
@@ -263,6 +270,78 @@ namespace DTAClient.DXGUI.Multiplayer
             WindowManager.GameClosing += WindowManager_GameClosing;
         }
 
+        // 从 INI 文件加载快捷键
+        private static void LoadHotkeyForButton(string actionName, XNAClientButton button)
+        {
+            string iniFilePath = Path.Combine("Resources", "DIY", "快捷键.ini");
+            if (File.Exists(iniFilePath))
+            {
+                var lines = File.ReadAllLines(iniFilePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('=');
+                    if (parts.Length == 2)
+                    {
+                        string action = parts[0].Trim();
+                        string key = parts[1].Trim();
+
+                        if (action == actionName)
+                        {
+                            button.HotKey = ParseKey(key);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Logger.Log($"无法找到快捷键文件: {iniFilePath}");
+            }
+        }
+
+        private static Keys ParseKey(string keyString)
+        {
+            return keyString switch
+            {
+                "Enter" => Keys.Enter,
+                "Escape" => Keys.Escape,
+                "C" => Keys.C,
+                "L" => Keys.L,
+                "S" => Keys.S,
+                "M" => Keys.M,
+                "N" => Keys.N,
+                "O" => Keys.O,
+                "E" => Keys.E,
+                "T" => Keys.T,
+                "R" => Keys.R,
+                "X" => Keys.X,
+                "A" => Keys.A,
+                "D" => Keys.D,
+                "W" => Keys.W,
+                "Q" => Keys.Q,
+                "F" => Keys.F,
+                "Z" => Keys.Z,
+                "V" => Keys.V,
+                "B" => Keys.B,
+                "P" => Keys.P,
+                "I" => Keys.I,
+                "H" => Keys.H,
+                "Space" => Keys.Space,
+                "Tab" => Keys.Tab,
+                "Left" => Keys.Left,
+                "Right" => Keys.Right,
+                "Up" => Keys.Up,
+                "Down" => Keys.Down,
+                "Back" => Keys.Back,
+                "Delete" => Keys.Delete,
+                "Home" => Keys.Home,
+                "End" => Keys.End,
+                "PageUp" => Keys.PageUp,
+                "PageDown" => Keys.PageDown,
+                _ => Keys.None // 默认返回 None
+            };
+        }
+
         private void LanGameLoadingLobby_GameLeft(object sender, EventArgs e)
         {
             Enable();
@@ -341,7 +420,7 @@ namespace DTAClient.DXGUI.Multiplayer
             Visible = true;
             Enabled = true;
 
-            Logger.Log("Creating LAN socket.");
+            Logger.Log("正在创建 LAN 套接字.");
 
             try
             {
@@ -353,7 +432,7 @@ namespace DTAClient.DXGUI.Multiplayer
             }
             catch (SocketException ex)
             {
-                Logger.Log("Creating LAN socket failed! Message: " + ex.Message);
+                Logger.Log("创建 LAN 套接字失败！消息: " + ex.Message);
                 lbChatMessages.AddMessage(new ChatMessage(Color.Red,
                     "Creating LAN socket failed! Message:".L10N("Client:Main:SocketFailure1") + " " + ex.Message));
                 lbChatMessages.AddMessage(new ChatMessage(Color.Red,
@@ -364,7 +443,7 @@ namespace DTAClient.DXGUI.Multiplayer
                 return;
             }
 
-            Logger.Log("Starting listener.");
+            Logger.Log("正在启动监听器.");
             new Thread(new ThreadStart(Listen)).Start();
 
             SendAlive();
@@ -405,7 +484,7 @@ namespace DTAClient.DXGUI.Multiplayer
             }
             catch (Exception ex)
             {
-                Logger.Log("LAN socket listener: exception: " + ex.Message);
+                Logger.Log("LAN 套接字监听器: 异常: " + ex.Message);
             }
         }
 

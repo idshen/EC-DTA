@@ -29,7 +29,7 @@ namespace ClientGUI
         /// </summary>
         public static void StartGameProcess(WindowManager windowManager)
         {
-            Logger.Log("About to launch main game executable.");
+            Logger.Log("即将启动主游戏可执行文件。");
 
             // In the relatively unlikely event that INI preprocessing is still going on, just wait until it's done.
             // TODO ideally this should be handled in the UI so the client doesn't appear just frozen for the user.
@@ -76,7 +76,7 @@ namespace ClientGUI
 
             if (UserINISettings.Instance.WindowedMode && UseQres && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Logger.Log("Windowed mode is enabled - using QRes.");
+                Logger.Log("窗口模式已启用 - 正在使用 QRes。");
                 Process QResProcess = new Process();
                 QResProcess.StartInfo.FileName = ProgramConstants.QRES_EXECUTABLE;
 
@@ -86,15 +86,15 @@ namespace ClientGUI
                     QResProcess.StartInfo.Arguments = "c=16 /R " + "\"" + SafePath.CombineFilePath(ProgramConstants.GamePath, gameExecutableName) + "\" " + additionalExecutableName + "-SPAWN";
                 QResProcess.EnableRaisingEvents = true;
                 QResProcess.Exited += new EventHandler(Process_Exited);
-                Logger.Log("Launch executable: " + QResProcess.StartInfo.FileName);
-                Logger.Log("Launch arguments: " + QResProcess.StartInfo.Arguments);
+                Logger.Log("启动可执行文件: " + QResProcess.StartInfo.FileName);
+                Logger.Log("启动参数: " + QResProcess.StartInfo.Arguments);
                 try
                 {
                     QResProcess.Start();
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Error launching QRes: " + ex.Message);
+                    Logger.Log("启动 QRes 时出错: " + ex.Message);
                     XNAMessageBox.Show(windowManager, "Error launching game", "Error launching " + ProgramConstants.QRES_EXECUTABLE + ". Please check that your anti-virus isn't blocking the CnCNet Client. " +
                         "You can also try running the client as an administrator." + Environment.NewLine + Environment.NewLine + "You are unable to participate in this match." +
                         Environment.NewLine + Environment.NewLine + "Returned error: " + ex.Message);
@@ -123,20 +123,20 @@ namespace ClientGUI
                 gameProcess.EnableRaisingEvents = true;
                 gameProcess.Exited += Process_Exited;
 
-                Logger.Log("Launch executable: " + gameProcess.StartInfo.FileName);
-                Logger.Log("Launch arguments: " + gameProcess.StartInfo.Arguments);
+                Logger.Log("启动可执行文件: " + gameProcess.StartInfo.FileName);
+                Logger.Log("启动参数: " + gameProcess.StartInfo.Arguments);
 
                 try
                 {
                     gameProcess.Start();
-                    Logger.Log("GameProcessLogic: Process started.");
+                    Logger.Log("游戏进程逻辑: 进程已启动。");
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Error launching " + gameFileInfo.Name + ": " + ex.Message);
-                    XNAMessageBox.Show(windowManager, "Error launching game", "Error launching " + gameFileInfo.Name + ". Please check that your anti-virus isn't blocking the CnCNet Client. " +
-                        "You can also try running the client as an administrator." + Environment.NewLine + Environment.NewLine + "You are unable to participate in this match." +
-                        Environment.NewLine + Environment.NewLine + "Returned error: " + ex.Message);
+                    Logger.Log("启动 " + gameFileInfo.Name + " 时出错: " + ex.Message);
+                    XNAMessageBox.Show(windowManager, "游戏启动错误", "启动 " + gameFileInfo.Name + " 游戏时出错。请检查您的杀毒软件是否阻止了CnCNet客户端。您也可以尝试以管理员身份运行客户端。" +
+                                        Environment.NewLine + Environment.NewLine + "您无法参与本场比赛。" +
+                                        Environment.NewLine + Environment.NewLine + "返回的错误信息：" + ex.Message);
                     Process_Exited(gameProcess, EventArgs.Empty);
                     return;
                 }
@@ -150,12 +150,12 @@ namespace ClientGUI
 
             GameProcessStarted?.Invoke();
 
-            Logger.Log("Waiting for qres.dat or " + gameExecutableName + " to exit.");
+            Logger.Log("等待 qres.dat 或 " + gameExecutableName + " 退出。");
         }
 
         static void Process_Exited(object sender, EventArgs e)
         {
-            Logger.Log("GameProcessLogic: Process exited.");
+            Logger.Log("游戏进程逻辑: 进程已退出。");
             Process proc = (Process)sender;
             proc.Exited -= Process_Exited;
             proc.Dispose();

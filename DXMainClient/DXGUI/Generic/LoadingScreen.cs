@@ -79,7 +79,7 @@ namespace DTAClient.DXGUI.Generic
 
         private void LogGameClientVersion()
         {
-            Logger.Log($"Game Client Version: {ClientConfiguration.Instance.LocalGame} {Updater.GameVersion}");
+            Logger.Log($"游戏客户端版本: {ClientConfiguration.Instance.LocalGame} {Updater.GameVersion}");
             Updater.OnLocalFileVersionsChecked -= LogGameClientVersion;
         }
 

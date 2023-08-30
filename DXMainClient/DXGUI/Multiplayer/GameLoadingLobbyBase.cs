@@ -232,7 +232,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
         private void HandleFSWEvent(FileSystemEventArgs e)
         {
-            Logger.Log("FSW Event: " + e.FullPath);
+            Logger.Log("FSW 事件: " + e.FullPath);
 
             if (Path.GetFileName(e.FullPath) == "SAVEGAME.NET")
             {

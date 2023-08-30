@@ -157,7 +157,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
 
             byte[] data;
 
-            Logger.Log("Fetching tunnel server info.");
+            Logger.Log("获取网络服务器信息。");
 
             try
             {
@@ -165,8 +165,8 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
             }
             catch (Exception ex)
             {
-                Logger.Log("Error when downloading tunnel server info: " + ex.Message);
-                Logger.Log("Retrying.");
+                Logger.Log("下载网络服务器信息时出错: " + ex.Message);
+                Logger.Log("正在重试。");
                 try
                 {
                     data = client.DownloadData(MainClientConstants.CNCNET_TUNNEL_LIST_URL);
@@ -175,12 +175,12 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
                 {
                     if (!tunnelCacheFile.Exists)
                     {
-                        Logger.Log("Tunnel cache file doesn't exist!");
+                        Logger.Log("网络缓存文件不存在！");
                         return returnValue;
                     }
                     else
                     {
-                        Logger.Log("Fetching tunnel server list failed. Using cached tunnel data.");
+                        Logger.Log("获取网络服务器列表失败。使用缓存的网络数据。");
                         data = File.ReadAllBytes(tunnelCacheFile.FullName);
                     }
                 }
@@ -210,7 +210,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Caught an exception when parsing a tunnel server: " + ex.Message);
+                    Logger.Log("解析网络服务器时捕获异常: " + ex.Message);
                 }
             }
 
@@ -230,7 +230,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Refreshing tunnel cache file failed! Returned error: " + ex.Message);
+                    Logger.Log("刷新网络缓存文件失败！返回的错误: " + ex.Message);
                 }
             }
 

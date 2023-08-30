@@ -167,11 +167,11 @@ namespace DTAClient.DXGUI.Multiplayer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Listener error: " + ex.Message);
+                    Logger.Log("监听器错误: " + ex.Message);
                     break;
                 }
 
-                Logger.Log("New client connected from " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
+                Logger.Log("新客户端连接自 " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
 
                 LANPlayerInfo lpInfo = new LANPlayerInfo(encoding);
                 lpInfo.SetClient(client);
@@ -197,13 +197,13 @@ namespace DTAClient.DXGUI.Multiplayer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Socket error with client " + lpInfo.IPAddress + "; removing. Message: " + ex.Message);
+                    Logger.Log("与客户端 " + lpInfo.IPAddress + " 的套接字错误; 正在移除.消息: " + ex.Message);
                     break;
                 }
 
                 if (bytesRead == 0)
                 {
-                    Logger.Log("Connect attempt from " + lpInfo.IPAddress + " failed! (0 bytes read)");
+                    Logger.Log("来自 " + lpInfo.IPAddress + " 的连接尝试失败！(读取 0 字节)");
 
                     break;
                 }
@@ -294,7 +294,7 @@ namespace DTAClient.DXGUI.Multiplayer
                     return;
             }
 
-            Logger.Log("Unknown LAN command from " + lpInfo.ToString() + " : " + data);
+            Logger.Log("来自 " + lpInfo.ToString() + " 的未知 LAN 命令: " + data);
         }
 
         private void CleanUpPlayer(LANPlayerInfo lpInfo)
@@ -328,7 +328,7 @@ namespace DTAClient.DXGUI.Multiplayer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Reading data from the server failed! Message: " + ex.Message);
+                    Logger.Log("从服务器读取数据失败！消息: " + ex.Message);
                     LeaveGame();
                     break;
                 }
@@ -364,7 +364,7 @@ namespace DTAClient.DXGUI.Multiplayer
                     continue;
                 }
 
-                Logger.Log("Reading data from the server failed (0 bytes received)!");
+                Logger.Log("从服务器读取数据失败（接收 0 字节）！");
                 LeaveGame();
                 break;
             }
@@ -380,7 +380,7 @@ namespace DTAClient.DXGUI.Multiplayer
                     return;
             }
 
-            Logger.Log("Unknown LAN command from the server: " + message);
+            Logger.Log("来自服务器的未知 LAN 命令: " + message);
         }
 
         protected override void LeaveGame()
@@ -596,7 +596,7 @@ namespace DTAClient.DXGUI.Multiplayer
             }
             catch
             {
-                Logger.Log("Sending message to game host failed!");
+                Logger.Log("向游戏主机发送消息失败！");
             }
         }
 

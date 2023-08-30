@@ -87,7 +87,7 @@ namespace DTAConfig
         {
             if (section == null)
             {
-                Logger.Log("DirectDrawWrapper: Configuration for renderer '" + InternalName + "' not found!");
+                Logger.Log("DirectDrawWrapper: 找不到渲染器 '" + InternalName + "' 的配置！");
                 return;
             }
 
@@ -135,16 +135,16 @@ namespace DTAConfig
 
             if (!string.IsNullOrEmpty(ddrawDLLPath) &&
                 !SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), ddrawDLLPath).Exists)
-                Logger.Log("DirectDrawWrapper: File specified in DLLPath= for renderer '" + InternalName + "' does not exist!");
+                Logger.Log("DirectDrawWrapper: 渲染器 '" + InternalName + "' 在 DLLPath= 中指定的文件不存在！");
 
             if (!string.IsNullOrEmpty(resConfigFileName) &&
                 !SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), resConfigFileName).Exists)
-                Logger.Log("DirectDrawWrapper: File specified in ConfigFileName= for renderer '" + InternalName + "' does not exist!");
+                Logger.Log("DirectDrawWrapper: 渲染器 '" + InternalName + "' 在 ConfigFileName= 中指定的文件不存在！");
 
             foreach (var file in filesToCopy)
             {
                 if (!SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), file).Exists)
-                    Logger.Log("DirectDrawWrapper: Additional file '" + file + "' for renderer '" + InternalName + "' does not exist!");
+                    Logger.Log("DirectDrawWrapper: 渲染器 '" + InternalName + "' 的附加文件 '" + file + "' 不存在！");
             }
         }
 
