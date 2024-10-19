@@ -158,13 +158,19 @@ namespace DTAClient.DXGUI.Generic
             WindowManager.CenterControlOnScreen(this);
 
             spriteBatch = new SpriteBatch(GraphicsDevice); // 初始化 spriteBatch
-            // 尝试加载动态背景帧
+                                                           // 尝试加载动态背景帧
             backgroundFrames = new List<Texture2D>();
             int frameIndex = 0;
 
-            while (File.Exists(Path.Combine("Resources", "DIY", "主菜单背景", $"GIF{frameIndex}.png")))
+            // 构建主菜单UI的路径
+            string customThemePath = Path.Combine(ProgramConstants.GamePath, "Resources", UserINISettings.Instance.ThemeFolderPath, "主菜单");
+            // Logger.Log($"自定义主题路径: {customThemePath}");
+
+            // 检查是否存在动态背景帧
+            while (File.Exists(Path.Combine(customThemePath, $"背景{frameIndex}.png")))
             {
-                backgroundFrames.Add(AssetLoader.LoadTexture($"Resources/DIY/主菜单背景/GIF{frameIndex}.png"));
+                // Logger.Log($"加载背景帧: 背景{frameIndex}.png");
+                backgroundFrames.Add(AssetLoader.LoadTexture(Path.Combine(customThemePath, $"背景{frameIndex}.png")));
                 frameIndex++;
             }
 
@@ -173,83 +179,88 @@ namespace DTAClient.DXGUI.Generic
                 dynamicBackgroundAvailable = true;  // 如果有动态背景帧，设置标志
                 currentFrame = 0;
                 frameTime = 0;
+                // Logger.Log($"成功加载 {backgroundFrames.Count} 个动态背景帧。");
+            }
+            else
+            {
+                Logger.Log("未找到任何背景帧。");
             }
 
             btnNewCampaign = new XNAClientButton(WindowManager);
             btnNewCampaign.Name = nameof(btnNewCampaign);
-            btnNewCampaign.IdleTexture = AssetLoader.LoadTexture("MainMenu/campaign.png");
-            btnNewCampaign.HoverTexture = AssetLoader.LoadTexture("MainMenu/campaign_c.png");
-            btnNewCampaign.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
+            btnNewCampaign.IdleTexture = AssetLoader.LoadTexture("主菜单/按钮/campaign.png");
+            btnNewCampaign.HoverTexture = AssetLoader.LoadTexture("主菜单/按钮/campaign_c.png");
+            btnNewCampaign.HoverSoundEffect = new EnhancedSoundEffect("主菜单/按钮/button.wav");
             btnNewCampaign.LeftClick += BtnNewCampaign_LeftClick;
 
             btnLoadGame = new XNAClientButton(WindowManager);
             btnLoadGame.Name = nameof(btnLoadGame);
-            btnLoadGame.IdleTexture = AssetLoader.LoadTexture("MainMenu/loadmission.png");
-            btnLoadGame.HoverTexture = AssetLoader.LoadTexture("MainMenu/loadmission_c.png");
-            btnLoadGame.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
+            btnLoadGame.IdleTexture = AssetLoader.LoadTexture("主菜单/按钮/loadmission.png");
+            btnLoadGame.HoverTexture = AssetLoader.LoadTexture("主菜单/按钮/loadmission_c.png");
+            btnLoadGame.HoverSoundEffect = new EnhancedSoundEffect("主菜单/按钮/button.wav");
             btnLoadGame.LeftClick += BtnLoadGame_LeftClick;
 
             btnSkirmish = new XNAClientButton(WindowManager);
             btnSkirmish.Name = nameof(btnSkirmish);
-            btnSkirmish.IdleTexture = AssetLoader.LoadTexture("MainMenu/skirmish.png");
-            btnSkirmish.HoverTexture = AssetLoader.LoadTexture("MainMenu/skirmish_c.png");
-            btnSkirmish.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
+            btnSkirmish.IdleTexture = AssetLoader.LoadTexture("主菜单/按钮/skirmish.png");
+            btnSkirmish.HoverTexture = AssetLoader.LoadTexture("主菜单/按钮/skirmish_c.png");
+            btnSkirmish.HoverSoundEffect = new EnhancedSoundEffect("主菜单/按钮/button.wav");
             btnSkirmish.LeftClick += BtnSkirmish_LeftClick;
 
             btnCnCNet = new XNAClientButton(WindowManager);
             btnCnCNet.Name = nameof(btnCnCNet);
-            btnCnCNet.IdleTexture = AssetLoader.LoadTexture("MainMenu/cncnet.png");
-            btnCnCNet.HoverTexture = AssetLoader.LoadTexture("MainMenu/cncnet_c.png");
-            btnCnCNet.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
+            btnCnCNet.IdleTexture = AssetLoader.LoadTexture("主菜单/按钮/cncnet.png");
+            btnCnCNet.HoverTexture = AssetLoader.LoadTexture("主菜单/按钮/cncnet_c.png");
+            btnCnCNet.HoverSoundEffect = new EnhancedSoundEffect("主菜单/按钮/button.wav");
             btnCnCNet.LeftClick += BtnCnCNet_LeftClick;
 
             btnLan = new XNAClientButton(WindowManager);
             btnLan.Name = nameof(btnLan);
-            btnLan.IdleTexture = AssetLoader.LoadTexture("MainMenu/lan.png");
-            btnLan.HoverTexture = AssetLoader.LoadTexture("MainMenu/lan_c.png");
-            btnLan.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
+            btnLan.IdleTexture = AssetLoader.LoadTexture("主菜单/按钮/lan.png");
+            btnLan.HoverTexture = AssetLoader.LoadTexture("主菜单/按钮/lan_c.png");
+            btnLan.HoverSoundEffect = new EnhancedSoundEffect("主菜单/按钮/button.wav");
             btnLan.LeftClick += BtnLan_LeftClick;
 
             btnOptions = new XNAClientButton(WindowManager);
             btnOptions.Name = nameof(btnOptions);
-            btnOptions.IdleTexture = AssetLoader.LoadTexture("MainMenu/options.png");
-            btnOptions.HoverTexture = AssetLoader.LoadTexture("MainMenu/options_c.png");
-            btnOptions.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
+            btnOptions.IdleTexture = AssetLoader.LoadTexture("主菜单/按钮/options.png");
+            btnOptions.HoverTexture = AssetLoader.LoadTexture("主菜单/按钮/options_c.png");
+            btnOptions.HoverSoundEffect = new EnhancedSoundEffect("主菜单/按钮/button.wav");
             btnOptions.LeftClick += BtnOptions_LeftClick;
 
             btnMapEditor = new XNAClientButton(WindowManager);
             btnMapEditor.Name = nameof(btnMapEditor);
-            btnMapEditor.IdleTexture = AssetLoader.LoadTexture("MainMenu/mapeditor.png");
-            btnMapEditor.HoverTexture = AssetLoader.LoadTexture("MainMenu/mapeditor_c.png");
-            btnMapEditor.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
+            btnMapEditor.IdleTexture = AssetLoader.LoadTexture("主菜单/按钮/mapeditor.png");
+            btnMapEditor.HoverTexture = AssetLoader.LoadTexture("主菜单/按钮/mapeditor_c.png");
+            btnMapEditor.HoverSoundEffect = new EnhancedSoundEffect("主菜单/按钮/button.wav");
             btnMapEditor.LeftClick += BtnMapEditor_LeftClick;
 
             btnStatistics = new XNAClientButton(WindowManager);
             btnStatistics.Name = nameof(btnStatistics);
-            btnStatistics.IdleTexture = AssetLoader.LoadTexture("MainMenu/statistics.png");
-            btnStatistics.HoverTexture = AssetLoader.LoadTexture("MainMenu/statistics_c.png");
-            btnStatistics.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
+            btnStatistics.IdleTexture = AssetLoader.LoadTexture("主菜单/按钮/statistics.png");
+            btnStatistics.HoverTexture = AssetLoader.LoadTexture("主菜单/按钮/statistics_c.png");
+            btnStatistics.HoverSoundEffect = new EnhancedSoundEffect("主菜单/按钮/button.wav");
             btnStatistics.LeftClick += BtnStatistics_LeftClick;
 
             btnCredits = new XNAClientButton(WindowManager);
             btnCredits.Name = nameof(btnCredits);
-            btnCredits.IdleTexture = AssetLoader.LoadTexture("MainMenu/credits.png");
-            btnCredits.HoverTexture = AssetLoader.LoadTexture("MainMenu/credits_c.png");
-            btnCredits.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
+            btnCredits.IdleTexture = AssetLoader.LoadTexture("主菜单/按钮/credits.png");
+            btnCredits.HoverTexture = AssetLoader.LoadTexture("主菜单/按钮/credits_c.png");
+            btnCredits.HoverSoundEffect = new EnhancedSoundEffect("主菜单/按钮/button.wav");
             btnCredits.LeftClick += BtnCredits_LeftClick;
 
             btnExtras = new XNAClientButton(WindowManager);
             btnExtras.Name = nameof(btnExtras);
-            btnExtras.IdleTexture = AssetLoader.LoadTexture("MainMenu/extras.png");
-            btnExtras.HoverTexture = AssetLoader.LoadTexture("MainMenu/extras_c.png");
-            btnExtras.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
+            btnExtras.IdleTexture = AssetLoader.LoadTexture("主菜单/按钮/extras.png");
+            btnExtras.HoverTexture = AssetLoader.LoadTexture("主菜单/按钮/extras_c.png");
+            btnExtras.HoverSoundEffect = new EnhancedSoundEffect("主菜单/按钮/button.wav");
             btnExtras.LeftClick += BtnExtras_LeftClick;
 
             var btnExit = new XNAClientButton(WindowManager);
             btnExit.Name = nameof(btnExit);
-            btnExit.IdleTexture = AssetLoader.LoadTexture("MainMenu/exitgame.png");
-            btnExit.HoverTexture = AssetLoader.LoadTexture("MainMenu/exitgame_c.png");
-            btnExit.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
+            btnExit.IdleTexture = AssetLoader.LoadTexture("主菜单/按钮/exitgame.png");
+            btnExit.HoverTexture = AssetLoader.LoadTexture("主菜单/按钮/exitgame_c.png");
+            btnExit.HoverSoundEffect = new EnhancedSoundEffect("主菜单/按钮/button.wav");
             btnExit.LeftClick += BtnExit_LeftClick;
 
             XNALabel lblCnCNetStatus = new XNALabel(WindowManager);

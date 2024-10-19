@@ -117,6 +117,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected XNAClientButton btnLeaveGame;
         protected GameLaunchButton btnLaunchGame;
         protected XNAClientButton btnPickRandomMap;
+        protected XNALabel lblscreen;       // 地图筛选
+        protected XNADropDown ddPeople;     // 地图筛选
         protected XNALabel lblMapName;
         protected XNALabel lblMapAuthor;
         protected XNALabel lblGameMode;
@@ -207,12 +209,14 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             btnLeaveGame = FindChild<XNAClientButton>(nameof(btnLeaveGame));
             btnLeaveGame.LeftClick += BtnLeaveGame_LeftClick;
+            btnLeaveGame.Text = "Leave Game".L10N("Client:Main:LeaveGame");
             btnLeaveGame.HotKey = Keys.None;               // 默认快捷键设置为 None
             LoadHotkeyForButton("17返回菜单", btnLeaveGame);   // 从 INI 文件加载 btnCancel 的快捷键
 
             btnLaunchGame = FindChild<GameLaunchButton>(nameof(btnLaunchGame));
             btnLaunchGame.LeftClick += BtnLaunchGame_LeftClick;
             btnLaunchGame.InitStarDisplay(RankTextures);
+            // btnLaunchGame.Text = "Launch Game".L10N("Client:Main:LaunchGame");
             btnLaunchGame.HotKey = Keys.None;               // 默认快捷键设置为 None
             LoadHotkeyForButton("16启动游戏", btnLaunchGame);   // 从 INI 文件加载 btnCancel 的快捷键
 
@@ -281,11 +285,48 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             btnPickRandomMap = FindChild<XNAClientButton>(nameof(btnPickRandomMap));
             btnPickRandomMap.LeftClick += BtnPickRandomMap_LeftClick;
 
+            // 创建 lblscreen 标签
+            lblscreen = new XNALabel(WindowManager);
+            lblscreen.Name = nameof(lblscreen);
+            lblscreen.Text = "Number".L10N("Client:Main:Number");
+            // 将 lblscreen 的 X 坐标设置为 ddGameModeMapFilter 的 X 坐标加上它的宽度和偏移量
+            lblscreen.ClientRectangle = new Rectangle(ddGameModeMapFilter.X + ddGameModeMapFilter.Width + 48,
+                                                      ddGameModeMapFilter.Y, 0, 0);
+            AddChild(lblscreen);
+
+            // 创建 ddPeople 下拉菜单
+            ddPeople = new XNADropDown(WindowManager);
+            ddPeople.Name = nameof(ddPeople);
+            ddPeople.ClientRectangle = new Rectangle(lblscreen.X + 40, lblscreen.Y, 40, 25); // 这里可以根据需要调整位置
+            AddChild(ddPeople);
+
+            // 添加下拉菜单项
+            ddPeople.AddItem("-");
+            for (int i = 2; i <= 8; i++)
+            {
+                ddPeople.AddItem(i.ToString());
+            }
+
+            ddPeople.SelectedIndex = 0;
+            ddPeople.SelectedIndexChanged += DdPeople_SelectedIndexChanged;
+
             CheckBoxes.ForEach(chk => chk.CheckedChanged += ChkBox_CheckedChanged);
             DropDowns.ForEach(dd => dd.SelectedIndexChanged += Dropdown_SelectedIndexChanged);
 
             InitializeGameOptionPresetUI();
         }
+
+        private void DdPeople_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            gameModeMapFilter = ddPeople.SelectedIndex != 0
+                ? new GameModeMapFilter(GetPeopleGameModeMaps(ddGameModeMapFilter.SelectedItem.Text, ddPeople.SelectedIndex + 1))
+                : ddGameModeMapFilter.SelectedItem.Tag as GameModeMapFilter;
+
+            ListMaps();
+        }
+
+        private Func<List<GameModeMap>> GetPeopleGameModeMaps(string gm, int i) => () =>
+            GameModeMaps.Where(gmm => gmm.Map.MaxPlayers == i && gmm.GameMode.UIName.L10N("Client:Main:GameMode:" + gmm.GameMode.Name) == gm).ToList();
 
         // 从 INI 文件加载快捷键
         private static void LoadHotkeyForButton(string actionName, XNAClientButton button)

@@ -91,7 +91,7 @@ namespace DTAClient
                 Logger.Log("启动参数: 无音频");
 
                 // TODO fix
-                throw new NotImplementedException("-NOAUDIO is currently not implemented, please run the client without it.".L10N("Client:Main:NoAudio"));
+                throw new NotImplementedException("-NOAUDIO 目前尚未实现，请取消后再运行客户端.".L10N("Client:Main:NoAudio"));
             }
 
             if (parameters.MultipleInstanceMode)
