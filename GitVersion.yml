@@ -42,6 +42,6 @@ branches:
   develop:
     regex: ^develop$
     increment: Minor
-    is-mainline: false
+    is-mainline: true
     mode: ContinuousDeployment
     tag: beta
