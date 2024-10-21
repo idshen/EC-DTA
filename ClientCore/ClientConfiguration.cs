@@ -264,7 +264,7 @@ namespace ClientCore
 
         public string TranslationsFolderPath => SafePath.CombineDirectoryPath(
             clientDefinitionsIni.GetStringValue(TRANSLATIONS, "TranslationsFolder",
-                SafePath.CombineDirectoryPath("Resources", "DIY", "”Ô—‘")));
+                SafePath.CombineDirectoryPath("Resources", "”Ô—‘")));
 
         private List<TranslationGameFile> _translationGameFiles;
 
